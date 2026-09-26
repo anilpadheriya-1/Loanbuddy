@@ -135,7 +135,7 @@ export default function CheckLoanPage() {
             </Alert>
           )}
           {content}
-          <div className="sticky bottom-0 z-10 -mx-4 mt-6 flex items-center justify-between gap-3 border-t bg-background/95 px-4 py-3 backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0">
+          <div className="sticky bottom-0 z-10 -mx-4 mt-6 flex items-center justify-between gap-3 border-t bg-background/95 px-4 pt-3 pb-[calc(0.75rem+var(--safe-bottom))] backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pb-3">
             <Button variant="outline" onClick={() => goTo(step - 1)} disabled={step === 0}>
               <ArrowLeft aria-hidden /> {t('common.back')}
             </Button>

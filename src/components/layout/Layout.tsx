@@ -47,7 +47,7 @@ export function Layout() {
 function Header() {
   const { t } = useI18n()
   return (
-    <header className="no-print sticky top-0 z-40 border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
+    <header className="no-print sticky top-0 z-40 border-b bg-background/90 pt-[var(--safe-top)] backdrop-blur supports-[backdrop-filter]:bg-background/75">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4">
         <Link to="/" className="flex min-w-0 items-center gap-2 rounded-md font-bold text-primary" aria-label={t('brand.name')}>
           <Logo className="size-8 shrink-0 text-primary" />
@@ -123,7 +123,7 @@ function MobileMenu() {
           <Menu aria-hidden />
         </Button>
       </DialogTrigger>
-      <DialogContent side="right" closeLabel={t('common.close')} aria-describedby={undefined}>
+      <DialogContent side="right" closeLabel={t('common.close')} aria-describedby={undefined} className="pt-[calc(1.25rem+var(--safe-top))]">
         <DialogTitle>{t('common.menu')}</DialogTitle>
         <nav aria-label={t('nav.main')}>
           <ul className="flex flex-col gap-1">
@@ -184,7 +184,7 @@ function Footer() {
     { to: '/privacy', key: 'nav.privacy' },
   ]
   return (
-    <footer className="no-print mt-16 border-t bg-card">
+    <footer className="no-print mt-16 border-t bg-card pb-[var(--safe-bottom)]">
       <div className="mx-auto max-w-6xl space-y-6 px-4 py-10">
         <div className="flex flex-col gap-6 md:flex-row md:justify-between">
           <div className="max-w-sm space-y-2">

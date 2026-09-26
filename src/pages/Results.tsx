@@ -10,6 +10,7 @@ import { useDraft } from '@/features/check-loan/DraftContext'
 import { useReport } from '@/features/check-loan/useReport'
 import { toSavedLoan } from '@/features/check-loan/saved'
 import { repository } from '@/lib/storage'
+import { isNativeApp, shareText } from '@/lib/native'
 import { formatDate, formatINR, formatMonths, formatPct, formatPp } from '@/lib/format'
 import { useI18n, type TKey } from '@/lib/i18n'
 import { renderMessage } from '@/lib/i18n/messages'
@@ -137,15 +138,8 @@ function ReportBody({
       net: formatINR(a.netReceived),
       repay: formatINR(a.totals.totalRepayment),
     })
-    try {
-      if (navigator.share) await navigator.share({ title: t('results.title'), text })
-      else {
-        await navigator.clipboard.writeText(text)
-        setShareMsg(t('results.shareFallback'))
-      }
-    } catch {
-      /* user cancelled */
-    }
+    const result = await shareText(t('results.title'), text)
+    if (result === 'copied') setShareMsg(t('results.shareFallback'))
   }
 
   return (
@@ -171,9 +165,12 @@ function ReportBody({
             >
               {savedNow ? <Check aria-hidden /> : <Save aria-hidden />} {savedNow ? t('results.saved') : t('results.save')}
             </Button>
-            <Button variant="outline" size="sm" onClick={() => window.print()}>
-              <Printer aria-hidden /> {t('results.print')}
-            </Button>
+            {/* Android's WebView cannot print, so the app offers Share instead. */}
+            {!isNativeApp() && (
+              <Button variant="outline" size="sm" onClick={() => window.print()}>
+                <Printer aria-hidden /> {t('results.print')}
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={share}>
               <Share2 aria-hidden /> {t('results.share')}
             </Button>

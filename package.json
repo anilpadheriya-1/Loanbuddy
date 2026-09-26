@@ -17,9 +17,15 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test",
-    "check": "npm run lint && npm run typecheck && npm test && npm run build"
+    "check": "npm run lint && npm run typecheck && npm test && npm run build",
+    "android:sync": "npm run build && cap sync android",
+    "android:assets": "node scripts/generate-android-assets.mjs",
+    "android:open": "cap open android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/share": "^8.0.2",
     "@fontsource/ibm-plex-mono": "^5.3.0",
     "@fontsource/ibm-plex-sans": "^5.3.0",
     "@fontsource/noto-sans-devanagari": "^5.3.0",
@@ -36,6 +42,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.5.2",
     "@eslint/js": "^9.39.5",
     "@playwright/test": "1.56.1",
     "@tailwindcss/vite": "^4.3.3",

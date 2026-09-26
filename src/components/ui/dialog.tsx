@@ -22,13 +22,19 @@ export function DialogContent({
           'fixed z-50 flex flex-col gap-4 border bg-card p-5 shadow-xl outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0',
           side === 'right'
             ? 'inset-y-0 right-0 h-full w-[min(20rem,85vw)] rounded-l-xl data-[state=open]:slide-in-from-right'
-            : 'top-1/2 left-1/2 max-h-[90vh] w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl',
+            : 'top-1/2 left-1/2 max-h-[90dvh] w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl',
           className,
         )}
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="absolute top-3 right-3 inline-flex size-10 items-center justify-center rounded-md text-muted-foreground hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring">
+        <DialogPrimitive.Close
+          className={cn(
+            'absolute right-3 inline-flex size-10 items-center justify-center rounded-md text-muted-foreground hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring',
+            // The side sheet starts at the very top of the screen, so keep the button below the status bar.
+            side === 'right' ? 'top-[calc(0.75rem+var(--safe-top))]' : 'top-3',
+          )}
+        >
           <X className="size-5" aria-hidden />
           <span className="sr-only">{closeLabel}</span>
         </DialogPrimitive.Close>

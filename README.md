@@ -85,6 +85,35 @@ npm run e2e          # Playwright: flows, Hindi, deep links, no horizontal scrol
 
 Deployment is on Netlify (`netlify.toml`): the build command is `npm run build`, the publish directory is `dist`, and an SPA fallback makes deep links such as `/check-loan/results` work on refresh.
 
+## Android app (APK)
+
+The Android app wraps the same web build with [Capacitor](https://capacitorjs.com). It runs fully offline, and loan data stays on the phone: cloud backup and device transfer are disabled in the manifest.
+
+**Getting an APK (no Android Studio needed).** The GitHub Action [`.github/workflows/android.yml`](.github/workflows/android.yml) builds it on every push to `main` or `claude/**`, and can also be started from the **Actions** tab ("Run workflow"). Each successful run:
+
+- attaches `loan-reality-india-debug.apk` to the **`android-latest`** pre-release on the Releases page. Open it on an Android phone, download, and allow "install from this source";
+- uploads the same file as a workflow artifact.
+
+**Play Store builds (optional).** Create an upload keystore once:
+
+```bash
+keytool -genkey -v -keystore release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias loanreality
+```
+
+Then add these repository secrets: `ANDROID_KEYSTORE_BASE64` (the output of `base64 -w0 release.jks`), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD`. The workflow will also produce a signed `loan-reality-india-release.apk` and an `.aab` for the Play Store. Keep the keystore safe: every future update must be signed with it.
+
+The app id is `com.loanrealityindia.app` (in `capacitor.config.ts` and `android/app/build.gradle`). Change it before the first Play Store upload if you want a different one; it cannot change afterwards.
+
+**Building locally** needs Android Studio (or the Android SDK) and JDK 21:
+
+```bash
+npm run android:sync     # build the web app and copy it into android/
+npm run android:open     # open in Android Studio, or: cd android && ./gradlew assembleDebug
+npm run android:assets   # regenerate launcher icons and splash screens from the logo
+```
+
+Differences in the app: Share uses Android's share sheet, and "Print / Save PDF" is not shown because Android's WebView cannot print.
+
 ## Quality checks built into the test suite
 
 - The RBI KFS APR illustration, zero-interest loans, fees deducted vs paid separately, flat vs reducing, and EMI mismatch.

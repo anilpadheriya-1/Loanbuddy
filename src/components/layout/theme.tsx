@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { PREF_KEYS, readPref, writePref } from '@/lib/storage'
+import { syncSystemBars } from '@/lib/native'
 
 type Theme = 'light' | 'dark'
 const ThemeContext = React.createContext<{ theme: Theme; toggle: () => void }>({ theme: 'light', toggle: () => {} })
@@ -10,6 +11,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0a1222' : '#0b2a5b')
+    syncSystemBars(theme)
   }, [theme])
   const value = React.useMemo(
     () => ({
