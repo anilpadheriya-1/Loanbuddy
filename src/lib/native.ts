@@ -32,3 +32,24 @@ export function syncSystemBars(theme: 'light' | 'dark'): void {
   if (!isNativeApp()) return
   SystemBars.setStyle({ style: theme === 'dark' ? SystemBarsStyle.Dark : SystemBarsStyle.Light }).catch(() => {})
 }
+
+/**
+ * Android back button (app only): close an open menu, dialog or dropdown
+ * first, then go back through the app's screens; on the first screen, send the
+ * app to the background like other Android apps.
+ */
+export function initBackButton(): void {
+  if (!isNativeApp()) return
+  void import('@capacitor/app').then(({ App }) =>
+    App.addListener('backButton', ({ canGoBack }) => {
+      const overlay = document.querySelector('[role="dialog"][data-state="open"], [data-radix-popper-content-wrapper]')
+      if (overlay) {
+        // Radix closes dialogs, menus and dropdowns on Escape.
+        ;(document.activeElement ?? document.body).dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+        return
+      }
+      if (canGoBack) window.history.back()
+      else void App.minimizeApp()
+    }),
+  )
+}

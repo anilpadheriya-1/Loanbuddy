@@ -8,9 +8,12 @@ import '@fontsource/noto-sans-devanagari/400.css'
 import '@fontsource/noto-sans-devanagari/600.css'
 import './index.css'
 import { App } from './App'
+import { initBackButton } from './lib/native'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
   </StrictMode>,
 )
+
+initBackButton()

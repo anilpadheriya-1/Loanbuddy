@@ -334,12 +334,36 @@ const CASES = [
     async () => {
       await go(page, '/')
       await waitBanner(true, 20000)
+      // 1. Back closes the open menu first and stays on the screen.
+      await page.eval(`document.querySelector('header button[aria-haspopup="dialog"]').click()`)
+      await page.waitFor(`!!document.querySelector('[role="dialog"][data-state="open"]')`, 5000, 'menu open')
+      await waitBanner(false, 10000)
+      const menuShot = screenshot('menu-open-no-banner')
+      key('KEYCODE_BACK')
+      await page.waitFor(`!document.querySelector('[role="dialog"][data-state="open"]')`, 5000, 'menu closed by back')
+      if ((await page.eval('location.pathname')) !== '/') throw new Error('back left Home while closing the menu')
+      await waitBanner(true, 20000)
+      // 2. Back returns to the previous screen; the banner follows the screen.
       await go(page, '/check-loan')
       await waitBanner(false, 10000)
       key('KEYCODE_BACK')
       await page.waitFor(`location.pathname === '/'`, 10000, 'back to Home')
       await waitBanner(true, 20000)
-      return { screenshot: screenshot('back-to-home') }
+      const homeShot = screenshot('back-to-home')
+      // 3. Back on the first screen sends the app to the background (not a blank page).
+      const history = await page.eval('history.length')
+      for (let i = 0; i < history; i++) {
+        if (!/mCurrentFocus=.*com\.loanrealityindia\.app/.test(tryShell('dumpsys window | grep mCurrentFocus'))) break
+        key('KEYCODE_BACK')
+        await sleep(700)
+      }
+      await sleep(1000)
+      const focus = tryShell('dumpsys window | grep mCurrentFocus')
+      if (/com\.loanrealityindia\.app/.test(focus)) throw new Error('back on the first screen did not leave the app')
+      if (!pid()) throw new Error('the app process died instead of going to the background')
+      launch()
+      await attach()
+      return { screenshots: [menuShot, homeShot] }
     },
   ],
   [
