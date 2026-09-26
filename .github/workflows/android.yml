@@ -1,23 +1,29 @@
 name: Android APK
 
-# Builds the Android app (Capacitor wrapper around the web app) on GitHub's
-# servers, which already have the Android SDK installed.
+# Builds the Android test app (Capacitor wrapper around the web app) on
+# GitHub's servers, which already have the Android SDK installed, then checks
+# it on an Android emulator: ads, consent, offline use and app lifecycle.
 #
-# Every successful build:
-#   - uploads the APK as a workflow artifact, and
-#   - refreshes the "android-latest" pre-release, so the newest test APK can be
-#     downloaded from the Releases page (also on a phone).
-# If signing secrets are configured, it also builds a signed release APK and
-# an .aab bundle for the Play Store.
+# This workflow only ever builds DEBUG APKs with Google's TEST ads. Play Store
+# builds come from release.yml, which refuses to run without real AdMob IDs.
+#
+# Every successful build refreshes the "android-latest" pre-release, so the
+# newest test APK can be downloaded from the Releases page (also on a phone).
 
 on:
   push:
     branches: [main, 'claude/**']
     paths-ignore: ['**.md']
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      release_check:
+        description: Called by release.yml; do not refresh the android-latest pre-release.
+        type: boolean
+        default: false
 
 concurrency:
-  group: android-${{ github.ref }}
+  group: android-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -29,7 +35,6 @@ jobs:
     timeout-minutes: 30
     env:
       VERSION_CODE: ${{ github.run_number }}
-      HAS_SIGNING: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -38,14 +43,21 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install dependencies
+      - name: Install dependencies (applies patches/)
         run: npm ci
 
-      - name: Test (calculation engine, content rules, UI)
-        run: npm test
+      - name: Lint, typecheck, unit tests and website build
+        run: npm run check
 
-      - name: Build web app
-        run: npm run build
+      - name: The website build contains no AdMob code
+        run: |
+          if grep -rl "bannerAdSizeChanged" dist/; then
+            echo "::error::AdMob code found in the website build"
+            exit 1
+          fi
+
+      - name: Build the Android web bundle (Google test ads)
+        run: npm run build:android
 
       - name: Copy web app into the Android project
         run: npx cap sync android
@@ -63,43 +75,72 @@ jobs:
           ./gradlew assembleDebug --no-daemon --stacktrace
           cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/loan-reality-india-debug.apk"
 
-      - name: Build signed release APK and Play Store bundle
-        if: env.HAS_SIGNING == 'true'
+      - name: Record the bundled Google ads SDK versions (for the Data safety form)
         working-directory: android
-        env:
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
-          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/release.jks"
-          ./gradlew assembleRelease bundleRelease --no-daemon --stacktrace
-          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/loan-reality-india-release.apk"
-          cp app/build/outputs/bundle/release/app-release.aab "$GITHUB_WORKSPACE/loan-reality-india-release.aab"
+          ./gradlew :app:dependencies --configuration releaseRuntimeClasspath --no-daemon -q \
+            | grep -Eo "com\.google\.android\.(gms:play-services-ads[a-z-]*|ump:user-messaging-platform):[^ ]+( -> [^ ]+)?" \
+            | sort -u > "$RUNNER_TEMP/ads-sdk.txt" || true
+          { echo "## Bundled Google ads SDKs"; echo; sed 's/^/- /' "$RUNNER_TEMP/ads-sdk.txt"; echo; } >> "$GITHUB_STEP_SUMMARY"
+          cat "$RUNNER_TEMP/ads-sdk.txt"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: loan-reality-india-android-${{ github.run_number }}
-          path: |
-            loan-reality-india-debug.apk
-            loan-reality-india-release.apk
-            loan-reality-india-release.aab
-          if-no-files-found: warn
+          path: loan-reality-india-debug.apk
 
       - name: Publish "android-latest" pre-release
+        if: ${{ !inputs.release_check }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files="loan-reality-india-debug.apk"
-          [ -f loan-reality-india-release.apk ] && files="$files loan-reality-india-release.apk"
           gh release delete android-latest --cleanup-tag --yes 2>/dev/null || true
-          gh release create android-latest $files \
+          gh release create android-latest loan-reality-india-debug.apk \
             --prerelease \
             --target "$GITHUB_SHA" \
             --title "Android test build #${{ github.run_number }}" \
-            --notes "Latest Android build of Loan Reality India from \`${GITHUB_REF_NAME}\` (${GITHUB_SHA::7}).
+            --notes "Latest Android test build of Loan Reality India from \`${GITHUB_REF_NAME}\` (${GITHUB_SHA::7}).
 
           Install: download **loan-reality-india-debug.apk** on your Android phone, open it, and allow installing from this source when asked.
-          The debug APK is for testing. For the Play Store, add signing secrets to get a signed release APK/AAB."
+          This build shows Google **test** ads only. Play Store builds come from the Release workflow."
+
+  android-check:
+    needs: apk
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: loan-reality-india-android-${{ github.run_number }}
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Emulator checks (ads, consent, offline, lifecycle)
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot
+          script: APK=loan-reality-india-debug.apk OUT=android-check node scripts/android-check.mjs
+
+      - name: Upload screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-check-${{ github.run_number }}
+          path: android-check
+          if-no-files-found: warn

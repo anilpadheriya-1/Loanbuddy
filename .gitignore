@@ -143,3 +143,6 @@ dist
 test-results
 playwright-report
 e2e/screenshots
+
+# Android emulator check output (CI)
+android-check/

@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+// Google's sample AdMob app ID: always serves test ads. Debug builds use it;
+// release builds must get the real ID from ADMOB_APP_ID (see the guard below).
+def TEST_ADMOB_APP_ID = 'ca-app-pub-3940256099942544~3347511713'
+def appVersion = new groovy.json.JsonSlurper().parse(file('../../package.json')).version
+def buildNumber = System.getenv("VERSION_CODE") ?: "1"
+
 android {
     namespace = "com.loanrealityindia.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -8,8 +14,9 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // CI passes VERSION_CODE (the GitHub run number) so every build can be installed over the previous one.
-        versionCode((System.getenv("VERSION_CODE") ?: "1").toInteger())
-        versionName "1.0." + (System.getenv("VERSION_CODE") ?: "0")
+        versionCode buildNumber.toInteger()
+        versionName "${appVersion} (${buildNumber})"
+        manifestPlaceholders = [admobAppId: System.getenv("ADMOB_APP_ID") ?: TEST_ADMOB_APP_ID]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -37,6 +44,22 @@ android {
             if (releaseKeystore) {
                 signingConfig signingConfigs.release
             }
+        }
+    }
+}
+
+// Release guard: a Play Store build must never ship Google's test AdMob ID
+// (it would earn nothing). Debug builds are unaffected.
+gradle.taskGraph.whenReady { graph ->
+    def releasing = graph.allTasks.any { task ->
+        task.project == project && task.name ==~ /(assemble|bundle|package|install)Release/
+    }
+    if (releasing) {
+        def id = System.getenv("ADMOB_APP_ID") ?: ""
+        if (!(id ==~ /ca-app-pub-\d{16}~\d{10}/) || id.contains("3940256099942544")) {
+            throw new GradleException(
+                "Release builds need the real AdMob app ID in ADMOB_APP_ID (got '${id ?: 'nothing'}'). " +
+                "Build a debug APK for testing, or run the Release workflow with the AdMob variables set.")
         }
     }
 }

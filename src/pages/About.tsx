@@ -21,11 +21,20 @@ export default function AboutPage() {
         </ul>
         <h2 className="pt-2 text-lg font-semibold">What we don’t do</h2>
         <ul className="list-disc space-y-1.5 pl-5">
-          <li>We are not a lender, loan agent or marketplace. There is no “Apply Now”, and we earn nothing from any lender.</li>
+          <li>We are not a lender, loan agent or marketplace. There is no “Apply Now”, and no lender pays us to be listed, ranked or recommended.</li>
           <li>We don’t rate lenders, and we never call a lender dishonest because of a calculation. A gap between the quoted rate and the effective cost usually has ordinary explanations.</li>
           <li>We don’t publish lender rates that we haven’t verified.</li>
           <li>We don’t collect PAN, Aadhaar, bank details or credit scores. See the <Link to="/privacy" className="text-brand underline">privacy note</Link>.</li>
         </ul>
+        <h2 className="pt-2 text-lg font-semibold">How this is funded</h2>
+        <p>
+          The website is free and has no ads. The Android app is free and shows a small banner ad from Google when your phone is online. Google chooses the ads, not us, and an ad
+          is never a recommendation. Ads never receive your loan numbers, and the calculator never changes its results for anyone. See the{' '}
+          <Link to="/privacy" className="text-brand underline">
+            privacy note
+          </Link>
+          .
+        </p>
         <h2 className="pt-2 text-lg font-semibold">Accuracy</h2>
         <p>
           The calculation engine is tested against RBI’s own KFS illustration (₹20,000 at 15% for 24 months with ₹400 of fees → APR 17.07%) and many other cases. Still, results

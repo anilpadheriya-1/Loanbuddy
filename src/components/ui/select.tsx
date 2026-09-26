@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Select as SelectPrimitive } from 'radix-ui'
 import { Check, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { AdOverlaySignal } from './ad-overlay-signal'
 
 export const Select = SelectPrimitive.Root
 export const SelectValue = SelectPrimitive.Value
@@ -35,6 +36,7 @@ export function SelectContent({ className, children, position = 'popper', ...pro
         )}
         {...props}
       >
+        <AdOverlaySignal />
         <SelectPrimitive.Viewport className="p-1">{children}</SelectPrimitive.Viewport>
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>

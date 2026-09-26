@@ -1,0 +1,150 @@
+name: Release (Play Store)
+
+# Builds the signed Play Store bundle (.aab). Run it from the Actions tab.
+# Nothing is built unless the release gate passes:
+#   - real AdMob app + banner IDs (never Google's test IDs)
+#   - signing secrets present, privacy policy and app-ads.txt deployed
+#   - Data safety form completed and consent tested on a real phone (inputs below)
+#   - all tests, a website build without AdMob code, and the emulator checks
+# The AAB is uploaded as a workflow artifact (never published publicly);
+# upload it to Play Console yourself.
+
+on:
+  workflow_dispatch:
+    inputs:
+      data_safety_completed:
+        description: I completed the Play Console Data safety form for this version
+        type: boolean
+        default: false
+      consent_tested_on_real_phone:
+        description: I tested the consent flow on a real phone (store/release-checklist.md)
+        type: boolean
+        default: false
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Release gate
+        env:
+          ADMOB_APP_ID: ${{ vars.ADMOB_APP_ID }}
+          ADMOB_BANNER_ID: ${{ vars.ADMOB_BANNER_ID }}
+          PRIVACY_POLICY_URL: ${{ vars.PRIVACY_POLICY_URL }}
+          APP_ADS_TXT_URL: ${{ vars.APP_ADS_TXT_URL }}
+          SIGNING_SECRETS_PRESENT: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' && secrets.ANDROID_KEYSTORE_PASSWORD != '' && secrets.ANDROID_KEY_ALIAS != '' && secrets.ANDROID_KEY_PASSWORD != '' }}
+          DATA_SAFETY_COMPLETED: ${{ inputs.data_safety_completed }}
+          CONSENT_TESTED_ON_REAL_PHONE: ${{ inputs.consent_tested_on_real_phone }}
+        run: node scripts/release-gate.mjs
+
+  verify-web:
+    needs: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint, typecheck, unit tests and website build
+        run: npm run check
+      - name: The website build contains no AdMob code
+        run: |
+          if grep -rl "bannerAdSizeChanged" dist/; then
+            echo "::error::AdMob code found in the website build"
+            exit 1
+          fi
+      - name: End-to-end tests (360px and 1280px)
+        run: |
+          npx playwright install --with-deps chromium
+          npm run e2e
+
+  android-checks:
+    needs: gate
+    permissions:
+      contents: write
+    uses: ./.github/workflows/android.yml
+    with:
+      release_check: true
+
+  build:
+    needs: [verify-web, android-checks]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      VERSION_CODE: ${{ github.run_number }}
+      ADMOB_APP_ID: ${{ vars.ADMOB_APP_ID }}
+      VITE_ADMOB_BANNER_ID: ${{ vars.ADMOB_BANNER_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build the Android web bundle (real ads)
+        run: npm run build:android
+      - name: The bundle carries the real banner unit
+        run: grep -rq "$VITE_ADMOB_BANNER_ID" dist/assets/
+      - run: npx cap sync android
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+      - name: Build signed release AAB and APK
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          export ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/release.jks"
+          chmod +x ./gradlew
+          ./gradlew bundleRelease assembleRelease --no-daemon --stacktrace
+          rm -f "$RUNNER_TEMP/release.jks"
+      - name: Verify the signature
+        run: |
+          jarsigner -verify android/app/build/outputs/bundle/release/app-release.aab | tee "$RUNNER_TEMP/verify.txt"
+          grep -q "jar verified" "$RUNNER_TEMP/verify.txt"
+      - name: Collect artifacts
+        id: out
+        run: |
+          version=$(node -p "require('./package.json').version")
+          name="loan-reality-india-${version}-${VERSION_CODE}"
+          cp android/app/build/outputs/bundle/release/app-release.aab "$name.aab"
+          cp android/app/build/outputs/apk/release/app-release.apk "$name.apk"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Release build"
+            echo
+            echo "- Version: ${version} (${VERSION_CODE})"
+            echo "- Release gate: ✅ passed (see the gate job summary)"
+            echo "- Tests, e2e and website without AdMob: ✅ (verify-web)"
+            echo "- Emulator checks: ✅ (android-checks)"
+            echo "- Signed AAB: ✅ jarsigner verified"
+            echo
+            echo "Download **$name.aab** from this run's artifacts and upload it in Play Console."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.out.outputs.name }}
+          path: |
+            ${{ steps.out.outputs.name }}.aab
+            ${{ steps.out.outputs.name }}.apk
+          if-no-files-found: error

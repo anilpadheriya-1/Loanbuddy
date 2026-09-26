@@ -1,0 +1,34 @@
+diff --git a/node_modules/@capacitor-community/admob/android/src/main/java/com/getcapacitor/community/admob/banner/BannerExecutor.java b/node_modules/@capacitor-community/admob/android/src/main/java/com/getcapacitor/community/admob/banner/BannerExecutor.java
+index 36b773c..3ab3bcb 100644
+--- a/node_modules/@capacitor-community/admob/android/src/main/java/com/getcapacitor/community/admob/banner/BannerExecutor.java
++++ b/node_modules/@capacitor-community/admob/android/src/main/java/com/getcapacitor/community/admob/banner/BannerExecutor.java
+@@ -130,23 +130,12 @@ public class BannerExecutor extends Executor {
+                 mAdViewLayoutParams.setMargins(sideMargin, densityMargin, sideMargin, densityMargin);
+             }
+ 
+-            // set Safe Area only for Android 15+
+-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+-                View rootView = activitySupplier.get().getWindow().getDecorView();
+-                rootView.setOnApplyWindowInsetsListener((v, insets) -> {
+-                    int bottomInset = insets.getSystemWindowInsetBottom();
+-                    int topInset = insets.getSystemWindowInsetTop();
+-
+-                    if ("TOP_CENTER".equals(adOptions.position)) {
+-                        mAdViewLayoutParams.setMargins(margins[0], margins[1] + topInset, margins[2], margins[3]);
+-                    } else {
+-                        mAdViewLayoutParams.setMargins(margins[0], margins[1], margins[2], margins[3] + bottomInset);
+-                    }
+-
+-                    mAdViewLayout.setLayoutParams(mAdViewLayoutParams);
+-                    return insets;
+-                });
+-            }
++            // Loan Reality India patch: the upstream plugin set its own
++            // OnApplyWindowInsetsListener on the decor view here (Android 15+).
++            // A view holds only one such listener, so that replaced Capacitor's
++            // SystemBars listener and broke keyboard resizing and the injected
++            // --safe-area-inset-* values for the whole app. The web layer passes
++            // the bottom inset as `margin` instead (see src/lib/ads/config.ts).
+ 
+             createNewAdView(adOptions);
+ 

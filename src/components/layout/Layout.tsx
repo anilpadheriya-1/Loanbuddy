@@ -8,6 +8,11 @@ import { cn } from '@/lib/utils'
 import { Logo } from './Logo'
 import { useTheme } from './theme'
 import { Disclaimer } from './Disclaimer'
+import { useBannerAd } from './useBannerAd'
+import { isNativeApp } from '@/lib/native'
+
+/** The Android app build shows banner ads; the website has none. */
+const ADS_APP = import.meta.env.MODE === 'android' && isNativeApp()
 
 const NAV: { to: string; key: TKey; end?: boolean }[] = [
   { to: '/', key: 'nav.home', end: true },
@@ -27,9 +32,11 @@ export function Layout() {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
+  useBannerAd()
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    // The bottom padding keeps content clear of the Android banner ad (0 on the web).
+    <div className="flex min-h-dvh flex-col pb-[var(--ad-height)]">
       <a
         href="#main"
         className="sr-only z-[60] rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
@@ -211,6 +218,7 @@ function Footer() {
         <Disclaimer />
         <p className="text-xs text-muted-foreground">
           {t('footer.built')} {t('footer.privacy')}
+          {ADS_APP && <> {t('ads.note')}</>}
         </p>
       </div>
     </footer>

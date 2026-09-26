@@ -67,8 +67,10 @@ export const en = {
   'footer.disclaimer':
     'Loan Reality India provides calculations and educational information, not lending, legal, tax or investment advice. Calculations depend on the information entered and may differ from a lender’s official APR/KFS where cash-flow timing or charge treatment differs. Verify the KFS, sanction letter, loan agreement and account statement before acting.',
   'footer.notLender': 'We are not a lender or loan agent. We do not sell loans, collect PAN/Aadhaar, or check your credit score.',
-  'footer.privacy': 'Your numbers stay in this browser.',
+  'footer.privacy': 'Your loan numbers stay on this device.',
   'footer.built': 'Educational tool for Indian borrowers.',
+  'ads.note': 'Free app, supported by ads from Google. We don’t choose the ads, and they are not recommendations.',
+  'ads.privacyChoices': 'Ad privacy choices',
 
   // --- Home -------------------------------------------------------------------
   'home.heroTitle': 'Know what your loan REALLY costs.',
@@ -76,7 +78,7 @@ export const en = {
     "Don't compare loans by interest rate alone. Calculate the real cost after fees, insurance, deductions and repayment structure.",
   'home.ctaCheck': 'Check My Loan',
   'home.ctaLearn': 'Learn How It Works',
-  'home.privacyLine': 'No sign-up. No PAN. Nothing leaves your browser.',
+  'home.privacyLine': 'No sign-up. No PAN. Your loan numbers never leave your device.',
   'home.exampleTitle': 'Why a 12% loan can cost more than 12%',
   'home.exampleSanctioned': 'sanctioned',
   'home.exampleDeductions': 'deducted upfront (processing fee + insurance)',
