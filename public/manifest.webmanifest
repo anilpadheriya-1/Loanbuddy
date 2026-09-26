@@ -1,0 +1,10 @@
+{
+  "name": "Loan Reality India",
+  "short_name": "Loan Reality",
+  "description": "Know what your loan REALLY costs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f8fb",
+  "theme_color": "#0b2a5b",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
