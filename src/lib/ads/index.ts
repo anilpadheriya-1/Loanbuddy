@@ -45,6 +45,7 @@ export function onAdState(fn: (state: AdState) => void): () => void {
   }
 }
 
-export function showAdPrivacyOptions(): Promise<void> {
-  return load().then((c) => c?.showPrivacyOptions())
+/** Opens Google's ad privacy options form. Resolves false if it could not open. */
+export function showAdPrivacyOptions(): Promise<boolean> {
+  return load().then((c) => (c ? c.showPrivacyOptions() : false))
 }

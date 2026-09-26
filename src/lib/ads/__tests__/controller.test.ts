@@ -1,5 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createAdController, ONLINE_DEBOUNCE_MS, LAYOUT_DEBOUNCE_MS, type AdController, type AdsNative, type ListenerHandle } from '../controller'
+import {
+  createAdController,
+  LAYOUT_DEBOUNCE_MS,
+  ONLINE_DEBOUNCE_MS,
+  PRIVACY_FORM_ATTEMPTS,
+  PRIVACY_FORM_RETRY_MS,
+  type AdController,
+  type AdsNative,
+  type ListenerHandle,
+} from '../controller'
 import { reportOverlay } from '../signals'
 import type { ConsentInfo } from '../state'
 
@@ -274,6 +283,29 @@ describe('ad controller', () => {
     expect(fake.native.removeBanner).toHaveBeenCalledTimes(1)
     expect(c.getState().phase).toBe('consent_required')
     expect(adHeight()).toBe('0px')
+  })
+
+  it('privacy choices: retries while the form is still loading, reports when it cannot open', async () => {
+    const fake = fakeNative()
+    const c = make(fake.native)
+    c.start()
+    await vi.advanceTimersByTimeAsync(LOAD_MS)
+
+    fake.native.showPrivacyOptionsForm
+      .mockRejectedValueOnce(new Error('Privacy options form is being loading. Please try again later.'))
+      .mockRejectedValueOnce(new Error('Privacy options form is being loading. Please try again later.'))
+    const opened = c.showPrivacyOptions()
+    await vi.advanceTimersByTimeAsync(2 * PRIVACY_FORM_RETRY_MS)
+    await expect(opened).resolves.toBe(true)
+    expect(fake.native.showPrivacyOptionsForm).toHaveBeenCalledTimes(3)
+
+    fake.native.showPrivacyOptionsForm.mockClear()
+    fake.native.showPrivacyOptionsForm.mockRejectedValue(new Error('offline'))
+    const failed = c.showPrivacyOptions()
+    await vi.advanceTimersByTimeAsync(PRIVACY_FORM_ATTEMPTS * PRIVACY_FORM_RETRY_MS)
+    await expect(failed).resolves.toBe(false)
+    expect(fake.native.showPrivacyOptionsForm).toHaveBeenCalledTimes(PRIVACY_FORM_ATTEMPTS)
+    expect(c.getState().phase).toBe('ready') // nothing else changed
   })
 
   it('dispose() removes every listener and the banner', async () => {

@@ -46,13 +46,17 @@ export interface AdController {
   setRoute(pathname: string): void
   getState(): AdState
   subscribe(fn: (state: AdState) => void): () => void
-  showPrivacyOptions(): Promise<void>
+  /** Opens Google's privacy options form. Resolves false if it could not open. */
+  showPrivacyOptions(): Promise<boolean>
   dispose(): Promise<void>
 }
 
 export const ONLINE_DEBOUNCE_MS = 2000
 export const LAYOUT_DEBOUNCE_MS = 300
 export const REMOVAL_TIMEOUT_MS = 1000
+/** Google's consent SDK refuses the privacy form while it is still preloading it. */
+export const PRIVACY_FORM_ATTEMPTS = 5
+export const PRIVACY_FORM_RETRY_MS = 1000
 
 interface Options {
   native: AdsNative
@@ -288,14 +292,25 @@ export function createAdController({
       return () => subscribers.delete(fn)
     },
     async showPrivacyOptions() {
-      if (disposed) return
+      if (disposed) return false
+      // Right after launch the SDK may still be loading the form ("being
+      // loading, try again later"): retry briefly instead of ignoring the tap.
+      for (let attempt = 1; ; attempt++) {
+        try {
+          await native.showPrivacyOptionsForm()
+          break
+        } catch {
+          if (disposed || attempt >= PRIVACY_FORM_ATTEMPTS) return false // usually offline
+          await new Promise((r) => setTimeout(r, PRIVACY_FORM_RETRY_MS))
+        }
+      }
       try {
-        await native.showPrivacyOptionsForm()
         const info = await native.requestConsentInfo(debug)
         dispatch({ type: 'PRIVACY_CHANGED', info, now: now() })
       } catch {
-        // The form could not open (usually offline). Nothing changes.
+        // The choice is saved by the SDK; the new status is read on the next launch.
       }
+      return true
     },
     async dispose() {
       if (disposed) return

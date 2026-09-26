@@ -13,6 +13,7 @@ export default function PrivacyPage() {
   usePageTitle('Privacy')
   const [cleared, setCleared] = useState(false)
   const [privacyChoicesAvailable, setPrivacyChoicesAvailable] = useState(false)
+  const [privacyChoices, setPrivacyChoices] = useState<'idle' | 'opening' | 'failed'>('idle')
   useEffect(() => onAdState((s) => setPrivacyChoicesAvailable(s.consent?.privacyOptionsRequired === true)), [])
 
   return (
@@ -50,9 +51,23 @@ export default function PrivacyPage() {
           </li>
         </ul>
         {ADS_APP && privacyChoicesAvailable && (
-          <Button variant="outline" onClick={() => void showAdPrivacyOptions()}>
-            Ad privacy choices
-          </Button>
+          <div className="space-y-2">
+            <Button
+              variant="outline"
+              disabled={privacyChoices === 'opening'}
+              onClick={async () => {
+                setPrivacyChoices('opening')
+                setPrivacyChoices((await showAdPrivacyOptions()) ? 'idle' : 'failed')
+              }}
+            >
+              Ad privacy choices
+            </Button>
+            {privacyChoices === 'failed' && (
+              <Alert tone="warning" role="status">
+                Couldn’t open ad privacy choices. Check your internet connection and try again.
+              </Alert>
+            )}
+          </div>
         )}
 
         <h2 className="pt-2 text-lg font-semibold">We never ask for</h2>

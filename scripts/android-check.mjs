@@ -127,8 +127,10 @@ async function waitBanner(present, timeout = 30000) {
 }
 
 function uiDump() {
-  tryShell('uiautomator dump /sdcard/ui.xml')
-  return tryShell('cat /sdcard/ui.xml')
+  // Remove the previous dump first: when a dump fails (e.g. "could not get idle
+  // state"), reading the old file would report a screen that is no longer shown.
+  tryShell('rm -f /sdcard/ui.xml; uiautomator dump /sdcard/ui.xml')
+  return tryShell('cat /sdcard/ui.xml 2>/dev/null')
 }
 function findText(xml, re) {
   for (const [node] of xml.matchAll(/<node [^>]*>/g)) {
