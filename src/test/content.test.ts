@@ -76,7 +76,9 @@ describe('copy rules', () => {
   const BANNED_HI = /(धोखा|धोखाधड़ी|फ़र्ज़ी|फर्जी|घोटाला|अवैध|छिपा|छुपा)/
   // Strip code that is not user-visible text (class names, aria attributes, CSS utilities).
   const visible = (line: string) =>
-    line
+    /^\s*(\/\/|\/\*|\*|\{\/\*)/.test(line)
+      ? '' // code comments are not user-facing
+      : line
       .replace(/className=("[^"]*"|\{[^}]*\}|`[^`]*`)/g, '')
       .replace(/aria-hidden/g, '')
       .replace(/[\w-]+:hidden|[\w]+-hidden/g, '')

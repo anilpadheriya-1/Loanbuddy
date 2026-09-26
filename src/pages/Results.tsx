@@ -124,7 +124,8 @@ function ReportBody({
   const typeLabel = t(`loanType.${report.input.loanType}` as TKey)
   const lender = report.input.lenderName?.trim()
   const gap = a.differencePp
-  const gapTone = gap === null ? '' : gap > 1.5 ? 'text-danger' : gap > 0.25 ? 'text-warning' : 'text-savings'
+  // Amber, never red: a cost gap is something to review, not an error.
+  const gapTone = gap === null ? '' : gap > 0.25 ? 'text-warning' : 'text-savings'
   const title = draftForSave.label.trim() || (lender ? `${typeLabel} · ${lender}` : typeLabel)
   const sections = SECTIONS.filter((s) => s.id !== 'save' || report.savingsPreview)
 

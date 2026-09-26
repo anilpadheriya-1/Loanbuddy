@@ -51,7 +51,7 @@ function Header() {
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4">
         <Link to="/" className="flex min-w-0 items-center gap-2 rounded-md font-bold text-primary" aria-label={t('brand.name')}>
           <Logo className="size-8 shrink-0 text-primary" />
-          <span className="truncate text-[15px] leading-tight sm:text-base">
+          <span className="truncate text-sm leading-tight min-[380px]:text-[15px] sm:text-base">
             Loan Reality <span className="text-brand">India</span>
           </span>
         </Link>
@@ -75,7 +75,7 @@ function Header() {
             ))}
           </ul>
         </nav>
-        <div className="ml-auto flex items-center gap-1 lg:ml-2">
+        <div className="ml-auto flex shrink-0 items-center gap-0.5 sm:gap-1 lg:ml-2">
           <LanguageSwitch />
           <ThemeToggle />
           <MobileMenu />
@@ -93,12 +93,12 @@ export function LanguageSwitch({ className }: { className?: string }) {
     <Button
       variant="ghost"
       size="sm"
-      className={cn('h-10 gap-1.5 px-2.5', className)}
+      className={cn('h-10 gap-1.5 px-2 sm:px-2.5', className)}
       onClick={() => setLang(next)}
       aria-label={`${t('common.language')}: ${label}`}
       lang={next === 'hi' ? 'hi' : 'en'}
     >
-      <Languages aria-hidden />
+      <Languages aria-hidden className="hidden sm:block" />
       <span>{label}</span>
     </Button>
   )

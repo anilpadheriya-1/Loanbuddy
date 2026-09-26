@@ -27,11 +27,31 @@ export function DraftProvider({ children }: { children: React.ReactNode }) {
   const [draft, setDraftState] = React.useState<LoanDraft>(() => initial ?? createDraft())
   const [resumed, setResumed] = React.useState(() => !!initial && hasMeaningfulContent(initial))
 
-  // Debounced autosave.
+  // Debounced autosave while typing…
+  const latest = React.useRef(draft)
   React.useEffect(() => {
+    latest.current = draft
     const id = window.setTimeout(() => repository.saveDraft(draft), 300)
     return () => window.clearTimeout(id)
   }, [draft])
+  // …and flushed immediately when the page is hidden or closed, so nothing typed is lost.
+  React.useEffect(() => {
+    const flush = () => repository.saveDraft(latest.current)
+    const onVisibility = () => document.visibilityState === 'hidden' && flush()
+    window.addEventListener('pagehide', flush)
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      window.removeEventListener('pagehide', flush)
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
+  }, [])
+
+  /** Replace the whole draft and save it right away (explicit user actions). */
+  const replaceNow = React.useCallback((d: LoanDraft) => {
+    setResumed(false)
+    repository.saveDraft(d)
+    setDraftState(d)
+  }, [])
 
   const value = React.useMemo<DraftContextValue>(
     () => ({
@@ -42,22 +62,13 @@ export function DraftProvider({ children }: { children: React.ReactNode }) {
           return { ...next, updatedAt: new Date().toISOString() }
         }),
       update: (patch) => setDraftState((prev) => ({ ...prev, ...patch, updatedAt: new Date().toISOString() })),
-      reset: () => {
-        setResumed(false)
-        setDraftState(createDraft())
-      },
-      loadExample: () => {
-        setResumed(false)
-        setDraftState(exampleDraft())
-      },
-      loadDraft: (d) => {
-        setResumed(false)
-        setDraftState(d)
-      },
+      reset: () => replaceNow(createDraft()),
+      loadExample: () => replaceNow(exampleDraft()),
+      loadDraft: (d) => replaceNow(d),
       resumed,
       hasContent: hasMeaningfulContent(draft),
     }),
-    [draft, resumed],
+    [draft, resumed, replaceNow],
   )
   return <DraftContext.Provider value={value}>{children}</DraftContext.Provider>
 }

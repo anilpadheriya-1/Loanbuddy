@@ -25,8 +25,8 @@ export function HomePage() {
     <div>
       <section className="border-b bg-card">
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:py-16 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-          <div className="space-y-6">
-            <Badge variant="info" className="text-xs">
+          <div className="min-w-0 space-y-6">
+            <Badge variant="info" className="text-xs whitespace-normal">
               <ShieldCheck aria-hidden /> {t('footer.notLender')}
             </Badge>
             <h1 className="text-4xl leading-tight font-bold text-primary sm:text-5xl">{t('home.heroTitle')}</h1>
@@ -48,7 +48,7 @@ export function HomePage() {
             </p>
           </div>
 
-          <figure className="rounded-2xl border-2 border-primary/15 bg-background p-5 shadow-sm sm:p-6" aria-labelledby="example-title">
+          <figure className="min-w-0 rounded-2xl border-2 border-primary/15 bg-background p-5 shadow-sm sm:p-6" aria-labelledby="example-title">
             <figcaption>
               <p id="example-title" className="font-semibold">
                 {t('home.exampleTitle')}

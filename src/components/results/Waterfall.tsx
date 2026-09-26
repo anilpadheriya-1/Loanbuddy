@@ -55,8 +55,8 @@ export function Waterfall({ steps, effective }: { steps: AttributionStep[]; effe
       </ol>
       <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <Key color="var(--chart-1)" label={`${t('attr.quoted')} / ${t('attr.effective')}`} />
-        <Key color="var(--chart-2)" label="+ pp" />
-        <Key color="var(--chart-3)" label="− pp" />
+        {rows.some((r) => !r.total && r.to >= r.from) && <Key color="var(--chart-2)" label={`+ ${t('common.ppShort')}`} />}
+        {rows.some((r) => !r.total && r.to < r.from) && <Key color="var(--chart-3)" label={`− ${t('common.ppShort')}`} />}
       </p>
     </div>
   )

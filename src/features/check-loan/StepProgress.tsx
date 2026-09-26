@@ -34,7 +34,8 @@ export function StepProgress({ current, onJump }: { current: number; onJump: (i:
                 >
                   {done ? <Check className="size-4" /> : i + 1}
                 </span>
-                <span className="truncate">{t(`wizard.steps.${key}` as TKey)}</span>
+                {/* On small screens names are for screen readers only (the current step is named below the bar). */}
+                <span className="truncate max-sm:sr-only">{t(`wizard.steps.${key}` as TKey)}</span>
                 <span className="sr-only">{done ? `(${t('wizard.completed')})` : active ? `(${t('wizard.current')})` : ''}</span>
               </button>
               <div className={cn('mx-auto mt-1 h-1 w-full rounded-full', done || active ? 'bg-primary' : 'bg-muted')} aria-hidden />
