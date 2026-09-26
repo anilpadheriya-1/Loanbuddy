@@ -204,7 +204,9 @@ class Page {
     })
   }
   async eval(expression) {
-    const r = await this.send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true })
+    // userGesture: like a real tap. Chromium skips history entries created
+    // without a user gesture when going back, which would hide back-button bugs.
+    const r = await this.send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true, userGesture: true })
     if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description ?? r.exceptionDetails.text)
     return r.result.value
   }
@@ -369,6 +371,9 @@ const CASES = [
   [
     'Background → foreground',
     async () => {
+      await go(page, '/')
+      await waitBanner(true, 30000)
+      await sleep(2000) // let any pending ad work finish before counting
       const before = await page.eval('location.pathname')
       logcatClear()
       key('KEYCODE_HOME')

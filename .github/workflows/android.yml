@@ -144,3 +144,12 @@ jobs:
           name: android-check-${{ github.run_number }}
           path: android-check
           if-no-files-found: warn
+
+      - name: Attach screenshots and results to the "android-latest" pre-release
+        if: ${{ always() && !inputs.release_check }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -d android-check ] || exit 0
+          (cd android-check && zip -qr ../android-check-results.zip .)
+          gh release upload android-latest android-check-results.zip --clobber --repo "$GITHUB_REPOSITORY"
