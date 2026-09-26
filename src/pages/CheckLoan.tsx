@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
-import { ArrowLeft, ArrowRight, RotateCcw, Sparkles } from 'lucide-react'
+import { Link, useNavigate, useSearchParams } from 'react-router'
+import { ArrowLeft, ArrowRight, MessageSquareText, RotateCcw, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Alert } from '@/components/ui/alert'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -73,6 +73,9 @@ export default function CheckLoanPage() {
             {t('wizard.title')}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">{t('wizard.subtitle')}</p>
+          <Link to="/ask-lender" className="no-print mt-2 inline-flex min-h-9 items-center gap-1.5 text-sm font-medium text-brand hover:underline">
+            <MessageSquareText className="size-4" aria-hidden /> {t('ask.missingDetails')}
+          </Link>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={() => loadExample()}>

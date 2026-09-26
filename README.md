@@ -10,6 +10,7 @@ An educational, private tool for Indian borrowers. Enter a home, vehicle, person
 - A paise-exact **amortization schedule** (table, yearly and chart views).
 - A **Loan Deal Score (0–100)** where every point is explained, plus a **Data Confidence** level.
 - **Questions to ask your lender** and **RBI rules that may apply**, linked to official sources.
+- **Ask Your Lender**: a checklist of the 14 details to get from the lender, including the KFS, APR, every deduction, and prepayment and foreclosure charges. It includes a ready-made request message in English or Hindi (copy, share or email) and tracks each detail as received, asked or not shared. The **real ROI** updates live as you fill details in, and is compared with the APR printed in the KFS. If the lender won't share, the page explains what RBI requires and how to escalate.
 - A **Savings Lab**: extra EMI, lump sums, reduce EMI vs tenure, rate negotiation, balance transfer break-even, optional add-ons, and late/bounce costs.
 - **Compare Loans**, **My Loans**, 26 **Learn** guides, **Rules & Sources**, and document and grievance checklists.
 

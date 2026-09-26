@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Check, Copy } from 'lucide-react'
+import { Link } from 'react-router'
+import { ArrowRight, Check, Copy } from 'lucide-react'
 import type { EngineMessage } from '@/lib/finance'
 import { Button } from '@/components/ui/button'
 import { renderMessage } from '@/lib/i18n/messages'
@@ -32,6 +33,11 @@ export function LenderQuestions({ questions }: { questions: EngineMessage[] }) {
         }}
       >
         {copied ? <Check aria-hidden /> : <Copy aria-hidden />} {copied ? t('common.copied') : t('questions.copyAll')}
+      </Button>
+      <Button asChild variant="link" size="sm" className="no-print ml-2">
+        <Link to="/ask-lender">
+          {t('ask.missingDetails')} <ArrowRight aria-hidden />
+        </Link>
       </Button>
     </div>
   )

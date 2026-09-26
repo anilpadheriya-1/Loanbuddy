@@ -130,6 +130,10 @@ export const LoanDraftSchema = z.object({
     foreclosureLetter: z.boolean(),
   }),
   valuesSource: z.enum(['documents', 'mixed', 'memory']),
+  /** APR as printed in the lender's KFS, to compare with our estimate (optional: older drafts don't have it). */
+  lenderApr: z.optional(NumFieldSchema),
+  /** "Ask your lender" tracking: which details were requested, and which the lender would not share. */
+  requests: z.optional(z.object({ asked: z.array(z.string()), refused: z.array(z.string()), received: z.optional(z.array(z.string())) })),
   updatedAt: z.string(),
 })
 export type LoanDraft = z.infer<typeof LoanDraftSchema>
@@ -191,6 +195,8 @@ export function createDraft(): LoanDraft {
     },
     documents: { kfs: false, sanctionLetter: false, loanAgreement: false, amortizationSchedule: false, statement: false, foreclosureLetter: false },
     valuesSource: 'mixed',
+    lenderApr: emptyNum(),
+    requests: { asked: [], refused: [], received: [] },
     updatedAt: new Date().toISOString(),
   }
 }

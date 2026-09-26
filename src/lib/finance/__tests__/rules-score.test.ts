@@ -142,3 +142,12 @@ describe('full report', () => {
     expect(r.prepaymentRule.status).toBe('cannot-determine')
   })
 })
+
+describe('lender APR comparison', () => {
+  it('treats small differences as matching and flags larger ones neutrally', async () => {
+    const { compareWithLenderApr } = await import('../lender-apr')
+    expect(compareWithLenderApr(17.07, 17.0).status).toBe('close')
+    expect(compareWithLenderApr(15.1, 14.2)).toEqual({ status: 'estimate-higher', differencePp: expect.closeTo(0.9, 6) })
+    expect(compareWithLenderApr(13.0, 14.0).status).toBe('estimate-lower')
+  })
+})

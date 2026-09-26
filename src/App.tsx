@@ -8,6 +8,7 @@ import { HomePage } from '@/pages/Home'
 import { PageLoading } from '@/components/layout/PageLoading'
 
 const CheckLoanPage = lazy(() => import('@/pages/CheckLoan'))
+const AskLenderPage = lazy(() => import('@/pages/AskLender'))
 const ResultsPage = lazy(() => import('@/pages/Results'))
 const SavingsPage = lazy(() => import('@/pages/Savings'))
 const ComparePage = lazy(() => import('@/pages/Compare'))
@@ -28,6 +29,7 @@ export function AppRoutes() {
         <Route index element={<HomePage />} />
         <Route path="check-loan" element={<Lazy el={<CheckLoanPage />} />} />
         <Route path="check-loan/results" element={<Lazy el={<ResultsPage />} />} />
+        <Route path="ask-lender" element={<Lazy el={<AskLenderPage />} />} />
         <Route path="savings" element={<Lazy el={<SavingsPage />} />} />
         <Route path="compare" element={<Lazy el={<ComparePage />} />} />
         <Route path="learn" element={<Lazy el={<LearnPage />} />} />

@@ -79,3 +79,25 @@ describe('Check My Loan wizard', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'मेरा लोन जाँचें' })).toBeInTheDocument()
   })
 })
+
+describe('Ask Your Lender', () => {
+  it('shows the request message and updates the real ROI as details are filled in', async () => {
+    const user = userEvent.setup()
+    renderAt('/ask-lender')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Get your full loan details' })).toBeInTheDocument()
+    expect(screen.getByText(/Foreclosure \(full prepayment\) charges and any lock-in period/)).toBeInTheDocument()
+    expect(screen.getAllByText(/Enter the loan amount, the number of EMIs/).length).toBeGreaterThan(0)
+
+    await user.type(screen.getByRole('textbox', { name: 'Loan amount sanctioned' }), '500000')
+    await user.type(screen.getByRole('textbox', { name: 'Interest rate quoted by the lender' }), '12')
+    await user.type(screen.getByRole('textbox', { name: 'Number of EMIs' }), '44')
+    await user.type(screen.getByRole('textbox', { name: 'Processing fee (₹)' }), '12000')
+    await user.type(screen.getByRole('textbox', { name: 'Insurance premium (₹)' }), '8000')
+
+    const panel = screen.getByRole('region', { name: 'Your real ROI' })
+    expect(within(panel).getByText('14.39%')).toBeInTheDocument()
+
+    await user.type(screen.getByRole('textbox', { name: 'APR written in the KFS' }), '14.3')
+    expect(within(panel).getByText(/Matches the APR in your KFS/)).toBeInTheDocument()
+  })
+})

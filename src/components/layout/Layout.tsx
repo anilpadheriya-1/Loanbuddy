@@ -12,6 +12,7 @@ import { Disclaimer } from './Disclaimer'
 const NAV: { to: string; key: TKey; end?: boolean }[] = [
   { to: '/', key: 'nav.home', end: true },
   { to: '/check-loan', key: 'nav.check' },
+  { to: '/ask-lender', key: 'nav.ask' },
   { to: '/my-loans', key: 'nav.myLoans' },
   { to: '/savings', key: 'nav.savings' },
   { to: '/compare', key: 'nav.compare' },
@@ -55,7 +56,7 @@ function Header() {
             Loan Reality <span className="text-brand">India</span>
           </span>
         </Link>
-        <nav aria-label={t('nav.main')} className="ml-auto hidden lg:block">
+        <nav aria-label={t('nav.main')} className="ml-auto hidden xl:block">
           <ul className="flex items-center gap-0.5">
             {NAV.slice(1).map((item) => (
               <li key={item.to}>
@@ -64,7 +65,7 @@ function Header() {
                   end={item.end}
                   className={({ isActive }) =>
                     cn(
-                      'inline-flex h-10 items-center rounded-md px-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground',
+                      'inline-flex h-10 items-center rounded-md px-2.5 text-sm font-medium whitespace-nowrap text-muted-foreground hover:bg-accent hover:text-foreground',
                       isActive && 'bg-accent text-foreground',
                     )
                   }
@@ -75,7 +76,7 @@ function Header() {
             ))}
           </ul>
         </nav>
-        <div className="ml-auto flex shrink-0 items-center gap-0.5 sm:gap-1 lg:ml-2">
+        <div className="ml-auto flex shrink-0 items-center gap-0.5 sm:gap-1 xl:ml-2">
           <LanguageSwitch />
           <ThemeToggle />
           <MobileMenu />
@@ -119,7 +120,7 @@ function MobileMenu() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="size-10 lg:hidden" aria-label={t('common.menu')}>
+        <Button variant="ghost" size="icon" className="size-10 xl:hidden" aria-label={t('common.menu')}>
           <Menu aria-hidden />
         </Button>
       </DialogTrigger>
@@ -174,6 +175,7 @@ function Footer() {
   const { t } = useI18n()
   const links: { to: string; key: TKey }[] = [
     { to: '/check-loan', key: 'nav.check' },
+    { to: '/ask-lender', key: 'nav.ask' },
     { to: '/savings', key: 'nav.savings' },
     { to: '/compare', key: 'nav.compare' },
     { to: '/learn', key: 'nav.learn' },

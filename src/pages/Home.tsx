@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { ArrowRight, BookOpen, Calculator, Eye, FileSearch, Lock, PiggyBank, Scale, ShieldCheck } from 'lucide-react'
+import { ArrowRight, BookOpen, Calculator, Eye, FileSearch, Lock, MessageSquareText, PiggyBank, Scale, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Disclaimer } from '@/components/layout/Disclaimer'
@@ -110,6 +110,25 @@ export function HomePage() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-14" aria-labelledby="ask-title">
+        <div className="flex flex-col gap-4 rounded-2xl border-2 border-brand/20 bg-info-soft p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="flex gap-4">
+            <MessageSquareText className="mt-1 size-8 shrink-0 text-brand" aria-hidden />
+            <div>
+              <h2 id="ask-title" className="text-xl font-bold">
+                {t('home.askTitle')}
+              </h2>
+              <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{t('home.askBody')}</p>
+            </div>
+          </div>
+          <Button asChild variant="brand" className="shrink-0">
+            <Link to="/ask-lender">
+              {t('nav.ask')} <ArrowRight aria-hidden />
+            </Link>
+          </Button>
+        </div>
       </section>
 
       <section className="border-y bg-card">

@@ -86,11 +86,11 @@ test('Hindi core flow', async ({ page }) => {
   await shot(page, 'wizard-hindi')
 })
 
-for (const path of ['/learn', '/learn/flat-vs-reducing', '/rules', '/documents', '/help', '/my-loans', '/about', '/privacy', '/no-such-page']) {
+for (const path of ['/ask-lender', '/learn', '/learn/flat-vs-reducing', '/rules', '/documents', '/help', '/my-loans', '/about', '/privacy', '/no-such-page']) {
   test(`page ${path} renders without horizontal scroll`, async ({ page }) => {
     await page.goto(path)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await noHorizontalScroll(page)
-    if (path === '/rules' || path === '/learn/flat-vs-reducing') await shot(page, path.replaceAll('/', '_'))
+    if (path === '/rules' || path === '/ask-lender' || path === '/learn/flat-vs-reducing') await shot(page, path.replaceAll('/', '_'))
   })
 }
