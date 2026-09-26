@@ -13,7 +13,7 @@ This is a **draft** for **Play Console → Policy → App content → Data safet
 
 ## 2. What the Google Mobile Ads SDK collects
 
-The app bundles the **Google Mobile Ads SDK** (`com.google.android.gms:play-services-ads`) and Google's **User Messaging Platform** consent SDK (`com.google.android.ump:user-messaging-platform`). Their exact versions are printed in every run of the **Android APK** workflow, in the job summary section "Bundled Google ads SDKs".
+The app bundles the **Google Mobile Ads SDK `com.google.android.gms:play-services-ads:25.4.0`** and Google's **User Messaging Platform** consent SDK **`com.google.android.ump:user-messaging-platform:4.0.0`**. Both versions are pinned in `android/variables.gradle`, and every run of the **Android APK** workflow prints them in the job summary section "Bundled Google ads SDKs". If you change them, check these answers again.
 
 Google publishes what these SDKs collect, and it can change between versions:
 
