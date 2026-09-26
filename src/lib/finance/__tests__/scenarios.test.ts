@@ -153,3 +153,15 @@ describe('existing loan', () => {
     expect(e.samplePrepayment!.interestSaved).toBeGreaterThan(0)
   })
 })
+
+describe('optional charges review', () => {
+  it('shows how much an optional insurance premium adds', async () => {
+    const { optionalChargeImpacts } = await import('../optional-charges')
+    const { homeExample } = await import('./fixtures')
+    const impacts = optionalChargeImpacts(homeExample())
+    expect(impacts).toHaveLength(1) // processing is mandatory; insurance is "unknown"
+    expect(impacts[0].name).toBe('Loan protection insurance')
+    expect(impacts[0].rupeesSaved).toBeCloseTo(8_000, 0)
+    expect(impacts[0].ppSaved).toBeGreaterThan(0.5)
+  })
+})
