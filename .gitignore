@@ -146,3 +146,4 @@ e2e/screenshots
 
 # Android emulator check output (CI)
 android-check/
+android-check-review/
