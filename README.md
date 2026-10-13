@@ -80,7 +80,8 @@ npm run lint
 npm run typecheck
 npm run build        # production build to dist/
 npm run check        # all of the above
-npm run e2e          # Playwright: flows, Hindi, deep links, no horizontal scroll at 360px/1280px
+npm run e2e          # Playwright at 360/390/768/1280/1440px: flows, Hindi, dark mode, offline,
+                     # keyboard, print-to-PDF, no horizontal scroll, no requests to other sites
 ```
 
 Deployment is on Netlify (`netlify.toml`): the build command is `npm run build`, the publish directory is `dist`, and an SPA fallback makes deep links such as `/check-loan/results` work on refresh.
@@ -93,6 +94,21 @@ The Android app wraps the same web build with [Capacitor](https://capacitorjs.co
 
 - attaches `loan-reality-india-debug.apk` to the **`android-latest`** pre-release on the Releases page. Open it on an Android phone, download, and allow "install from this source";
 - uploads the same file as a workflow artifact.
+
+**No ads, no trackers.** The app has no advertising or analytics SDKs, and it asks only for the internet permission. This is enforced in three places:
+
+- `src/test/no-ads.test.ts` scans npm's fully resolved dependency graph (`package-lock.json`), the Gradle files, the Android manifest, the HTML shell, public assets and the source for known ad SDKs and ad-network domains (listed in [`scripts/ad-signatures.json`](scripts/ad-signatures.json)).
+- The Android workflow resolves the Gradle runtime dependency graph and runs [`scripts/verify-apk.mjs`](scripts/verify-apk.mjs) on the built APK/AAB. It unzips the APK, scans the compiled code (`classes*.dex`) and the bundled web app, and reads the manifest's permissions. The build fails if anything matches.
+- The e2e tests fail if the app makes any request to another site.
+
+Each release lists the APK's SHA-256 (also in `SHA256SUMS.txt` and `apk-verification.md`). **Only install the APK from this repository's `android-latest` release.** APKs made by online "website to app" converters often inject ads; such ads do not come from this code. To check a downloaded file:
+
+```bash
+sha256sum loan-reality-india-debug.apk                    # compare with the release notes
+node scripts/verify-apk.mjs loan-reality-india-debug.apk  # needs Node and unzip
+```
+
+A source and APK scan finds known ad SDKs and domains; it cannot prove that no ad can ever appear. A final check on a real phone is still worthwhile: install the APK, use it online and offline, and look for ads or unexpected redirects.
 
 **Play Store builds (optional).** Create an upload keystore once:
 

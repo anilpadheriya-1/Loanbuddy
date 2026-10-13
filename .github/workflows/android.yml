@@ -78,6 +78,31 @@ jobs:
           cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/loan-reality-india-release.apk"
           cp app/build/outputs/bundle/release/app-release.aab "$GITHUB_WORKSPACE/loan-reality-india-release.aab"
 
+      - name: Resolve the Android dependency graph
+        working-directory: android
+        run: |
+          for c in debugRuntimeClasspath releaseRuntimeClasspath; do
+            ./gradlew :app:dependencies --configuration "$c" --no-daemon -q
+          done > "$RUNNER_TEMP/gradle-deps.txt"
+          wc -l "$RUNNER_TEMP/gradle-deps.txt"
+
+      # Fails the build if any ad SDK, ad-network domain or unexpected permission
+      # is found in the compiled code, the bundled web app or the dependency graph.
+      - name: Verify the APK is ad-free
+        run: |
+          files="loan-reality-india-debug.apk"
+          [ -f loan-reality-india-release.apk ] && files="$files loan-reality-india-release.apk"
+          [ -f loan-reality-india-release.aab ] && files="$files loan-reality-india-release.aab"
+          node scripts/verify-apk.mjs $files --gradle-deps "$RUNNER_TEMP/gradle-deps.txt" --report apk-verification.md
+          {
+            echo ""
+            echo "- Version code: ${VERSION_CODE} (versionName 1.0.${VERSION_CODE})"
+            echo "- Commit: ${GITHUB_SHA}"
+            echo "- Branch: ${GITHUB_REF_NAME}"
+          } >> apk-verification.md
+          sha256sum loan-reality-india-*.apk loan-reality-india-*.aab 2>/dev/null | tee SHA256SUMS.txt
+          cat apk-verification.md >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
@@ -86,20 +111,29 @@ jobs:
             loan-reality-india-debug.apk
             loan-reality-india-release.apk
             loan-reality-india-release.aab
+            apk-verification.md
+            SHA256SUMS.txt
           if-no-files-found: warn
 
       - name: Publish "android-latest" pre-release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files="loan-reality-india-debug.apk"
+          files="loan-reality-india-debug.apk SHA256SUMS.txt apk-verification.md"
           [ -f loan-reality-india-release.apk ] && files="$files loan-reality-india-release.apk"
+          {
+            echo "Latest Android build of Loan Reality India from \`${GITHUB_REF_NAME}\` (${GITHUB_SHA::7})."
+            echo ""
+            echo "Install: download **loan-reality-india-debug.apk** on your Android phone, open it, and allow installing from this source when asked."
+            echo "The debug APK is for testing. For the Play Store, add signing secrets to get a signed release APK/AAB."
+            echo ""
+            echo "This app contains no ads. Only install the APK from this page, and check its SHA-256 against the list below."
+            echo ""
+            cat apk-verification.md
+          } > "$RUNNER_TEMP/notes.md"
           gh release delete android-latest --cleanup-tag --yes 2>/dev/null || true
           gh release create android-latest $files \
             --prerelease \
             --target "$GITHUB_SHA" \
             --title "Android test build #${{ github.run_number }}" \
-            --notes "Latest Android build of Loan Reality India from \`${GITHUB_REF_NAME}\` (${GITHUB_SHA::7}).
-
-          Install: download **loan-reality-india-debug.apk** on your Android phone, open it, and allow installing from this source when asked.
-          The debug APK is for testing. For the Play Store, add signing secrets to get a signed release APK/AAB."
+            --notes-file "$RUNNER_TEMP/notes.md"
