@@ -46,5 +46,11 @@
     "outbrain.com",
     "appsgeyser"
   ],
-  "permissions": ["android.permission.INTERNET"]
+  "permissions": [
+    "android.permission.INTERNET"
+  ],
+  "$comment_permissions": "'permissions' are the only ones the app may request. 'allowedAppPermissions' are permissions the app defines for itself and that AndroidX adds automatically (e.g. androidx.core's signature-level receiver guard); they grant nothing to other apps and are not ad-related.",
+  "allowedAppPermissions": [
+    "DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ]
 }
