@@ -60,6 +60,15 @@ export const hi: Partial<Record<TKey, string>> = {
   'nav.documents': 'दस्तावेज़ जाँचें',
   'nav.help': 'कुछ गड़बड़ लग रहा है?',
   'nav.main': 'मुख्य नेविगेशन',
+  'nav.more': 'और',
+  'common.loadFailedTitle': 'यह पेज लोड नहीं हो सका',
+  'common.loadFailedBody': 'अपना इंटरनेट कनेक्शन जाँचें और फिर से कोशिश करें। आपके सेव किए गए लोन इस डिवाइस पर सुरक्षित हैं।',
+  'common.retry': 'फिर से कोशिश करें',
+  'nav.tabs': 'त्वरित नेविगेशन',
+  'tab.home': 'होम',
+  'tab.check': 'जाँचें',
+  'tab.myLoans': 'मेरे लोन',
+  'tab.savings': 'बचत',
 
   'footer.disclaimerTitle': 'ज़रूरी सूचना',
   'footer.disclaimer':

@@ -8,32 +8,32 @@
  * amber for things to check, red only for real errors.
  */
 :root {
-  --radius: 0.75rem;
-  --background: #f6f8fb;
-  --foreground: #0f1b33;
+  --radius: 1rem;
+  --background: #f7f8fa;
+  --foreground: #0f172a;
   --card: #ffffff;
-  --card-foreground: #0f1b33;
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #0f1b33;
+  --popover-foreground: #0f172a;
   --primary: #0b2a5b;
   --primary-foreground: #ffffff;
-  --secondary: #e8eef8;
+  --secondary: #eef2f8;
   --secondary-foreground: #0b2a5b;
-  --muted: #eef2f7;
-  --muted-foreground: #4b5a73;
-  --accent: #e3ecfb;
+  --muted: #f1f3f6;
+  --muted-foreground: #4a5568;
+  --accent: #eef3fc;
   --accent-foreground: #0b2a5b;
   --brand: #1d4ed8;
   --brand-foreground: #ffffff;
   --savings: #15803d;
-  --savings-soft: #e7f6ec;
+  --savings-soft: #ecf7f0;
   --warning: #a15c07;
-  --warning-soft: #fdf3e1;
+  --warning-soft: #fdf6e8;
   --danger: #b42318;
-  --danger-soft: #fdecea;
-  --info-soft: #e8f0fe;
-  --border: #d9e1ec;
-  --input: #c9d4e3;
+  --danger-soft: #fdf0ef;
+  --info-soft: #eff4fe;
+  --border: #e3e7ed;
+  --input: #cfd6e0;
   --ring: #1d4ed8;
   /* Chart series: validated categorical slots 1–3 (CVD-safe, see dataviz validator). */
   --chart-1: #2a78d6;
@@ -44,32 +44,32 @@
 }
 
 .dark {
-  --background: #0a1222;
-  --foreground: #e6ecf5;
-  --card: #111b2f;
-  --card-foreground: #e6ecf5;
-  --popover: #111b2f;
-  --popover-foreground: #e6ecf5;
-  --primary: #9dbbf5;
-  --primary-foreground: #0a1222;
-  --secondary: #1b2a45;
+  --background: #0b1220;
+  --foreground: #e7ecf3;
+  --card: #111a2b;
+  --card-foreground: #e7ecf3;
+  --popover: #121c2e;
+  --popover-foreground: #e7ecf3;
+  --primary: #a8c3f5;
+  --primary-foreground: #0b1220;
+  --secondary: #1a2538;
   --secondary-foreground: #dbe6fa;
-  --muted: #16233b;
-  --muted-foreground: #a3b2c9;
-  --accent: #1b2a45;
+  --muted: #162033;
+  --muted-foreground: #a5b1c4;
+  --accent: #1a2538;
   --accent-foreground: #dbe6fa;
-  --brand: #7aa2f7;
-  --brand-foreground: #0a1222;
+  --brand: #7ea6f8;
+  --brand-foreground: #0b1220;
   --savings: #4ade80;
-  --savings-soft: #10301f;
+  --savings-soft: #10291c;
   --warning: #fbbf24;
-  --warning-soft: #33260b;
+  --warning-soft: #2c2210;
   --danger: #f87171;
-  --danger-soft: #3a1414;
-  --info-soft: #14254a;
-  --border: #243452;
-  --input: #2d3f61;
-  --ring: #7aa2f7;
+  --danger-soft: #331617;
+  --info-soft: #14213d;
+  --border: #223047;
+  --input: #2e3d57;
+  --ring: #7ea6f8;
   --chart-1: #3987e5;
   --chart-2: #d95926;
   --chart-3: #199e70;
@@ -126,6 +126,13 @@
   --safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
   --safe-left: var(--safe-area-inset-left, env(safe-area-inset-left, 0px));
   --safe-right: var(--safe-area-inset-right, env(safe-area-inset-right, 0px));
+  /* Height of the mobile bottom tab bar (without the safe-area inset). 0 on desktop. */
+  --bottom-nav: 4rem;
+}
+@media (min-width: 64rem) {
+  :root {
+    --bottom-nav: 0px;
+  }
 }
 
 @layer base {
@@ -135,6 +142,8 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 5rem;
+    /* Keep focused fields clear of the sticky wizard bar and the tab bar. */
+    scroll-padding-bottom: calc(var(--bottom-nav) + var(--safe-bottom) + 5rem);
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
@@ -166,6 +175,25 @@
   font-feature-settings: 'tnum' 1;
 }
 
+/* Collapsible report sections: native <details>, with a rotating chevron. */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+details[open] > summary .details-chevron {
+  transform: rotate(180deg);
+}
+
+/* Horizontal chip rows scroll without a visible scrollbar. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -195,6 +223,18 @@
   }
   .print-avoid-break {
     break-inside: avoid;
+  }
+  /* Collapsed report sections print in full. */
+  details::details-content {
+    content-visibility: visible;
+    display: block;
+  }
+  details > summary .details-chevron {
+    display: none;
+  }
+  .print-plain {
+    border: 0 !important;
+    padding: 0 !important;
   }
   a[href^='http']::after {
     content: ' (' attr(href) ')';

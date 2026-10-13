@@ -13,16 +13,18 @@ export function DialogContent({
   side,
   closeLabel = 'Close',
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content> & { side?: 'right' | 'center'; closeLabel?: string }) {
+}: React.ComponentProps<typeof DialogPrimitive.Content> & { side?: 'right' | 'bottom' | 'center'; closeLabel?: string }) {
   return (
     <DialogPrimitive.Portal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
+      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/40 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
       <DialogPrimitive.Content
         className={cn(
-          'fixed z-50 flex flex-col gap-4 border bg-card p-5 shadow-xl outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0',
+          'fixed z-50 flex flex-col gap-4 border bg-popover p-5 shadow-xl outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0',
           side === 'right'
-            ? 'inset-y-0 right-0 h-full w-[min(20rem,85vw)] rounded-l-xl data-[state=open]:slide-in-from-right'
-            : 'top-1/2 left-1/2 max-h-[90dvh] w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl',
+            ? 'inset-y-0 right-0 h-full w-[min(20rem,85vw)] rounded-l-2xl data-[state=open]:slide-in-from-right'
+            : side === 'bottom'
+              ? 'inset-x-0 bottom-0 max-h-[85dvh] overflow-y-auto rounded-t-3xl border-x-0 border-b-0 pb-[calc(1.25rem+var(--safe-bottom))] data-[state=open]:slide-in-from-bottom data-[state=open]:duration-200'
+              : 'top-1/2 left-1/2 max-h-[90dvh] w-[calc(100vw-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl',
           className,
         )}
         {...props}

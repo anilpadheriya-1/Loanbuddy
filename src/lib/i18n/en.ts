@@ -61,6 +61,15 @@ export const en = {
   'nav.documents': 'Check documents',
   'nav.help': "Something doesn't look right?",
   'nav.main': 'Main navigation',
+  'nav.more': 'More',
+  'common.loadFailedTitle': 'This page could not be loaded',
+  'common.loadFailedBody': 'Check your internet connection and try again. Your saved loans are safe on this device.',
+  'common.retry': 'Try again',
+  'nav.tabs': 'Quick navigation',
+  'tab.home': 'Home',
+  'tab.check': 'Check',
+  'tab.myLoans': 'My Loans',
+  'tab.savings': 'Savings',
 
   // --- Footer / disclaimer --------------------------------------------------
   'footer.disclaimerTitle': 'Important',

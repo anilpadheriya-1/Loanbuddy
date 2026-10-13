@@ -1,11 +1,11 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router'
 import { Layout } from '@/components/layout/Layout'
 import { LanguageProvider } from '@/lib/i18n'
 import { ThemeProvider } from '@/components/layout/theme'
 import { DraftProvider } from '@/features/check-loan/DraftContext'
 import { HomePage } from '@/pages/Home'
-import { PageLoading } from '@/components/layout/PageLoading'
+import { PageErrorBoundary, PageLoading } from '@/components/layout/PageLoading'
 
 const CheckLoanPage = lazy(() => import('@/pages/CheckLoan'))
 const ResultsPage = lazy(() => import('@/pages/Results'))
@@ -46,7 +46,12 @@ export function AppRoutes() {
 }
 
 function Lazy({ el }: { el: React.ReactNode }) {
-  return <Suspense fallback={<PageLoading />}>{el}</Suspense>
+  const { pathname } = useLocation()
+  return (
+    <PageErrorBoundary key={pathname}>
+      <Suspense fallback={<PageLoading />}>{el}</Suspense>
+    </PageErrorBoundary>
+  )
 }
 
 export function App() {
