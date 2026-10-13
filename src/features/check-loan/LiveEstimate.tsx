@@ -9,7 +9,7 @@ export function LiveEstimate({ report, className }: { report: LoanReport | null;
   const a = report?.analysis
   const ok = a && a.status === 'ok' && a.effective
   return (
-    <aside className={cn('rounded-xl border bg-card p-4 shadow-xs', className)} aria-live="polite" aria-label={t('wizard.liveTitle')}>
+    <aside className={cn('rounded-2xl border bg-card p-4', className)} aria-live="polite" aria-label={t('wizard.liveTitle')}>
       <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">{t('wizard.liveTitle')}</p>
       {!ok ? (
         <p className="mt-2 text-sm text-muted-foreground">{t('wizard.liveNeedMore')}</p>

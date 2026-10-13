@@ -10,7 +10,7 @@ export function ConfidenceBadge({ level }: { level: ConfidenceLevel }) {
   const { t } = useI18n()
   const Icon = ICON[level]
   return (
-    <Badge variant={VARIANT[level]} className="text-sm">
+    <Badge variant={VARIANT[level]} className="text-sm whitespace-normal">
       <Icon aria-hidden /> {t('results.confidence')}: {t(`confidence.${level}` as TKey)}
     </Badge>
   )

@@ -7,7 +7,6 @@ import { Alert } from '@/components/ui/alert'
 import { Field } from '@/components/loan/Field'
 import { MoneyBox, NumberBox, PercentBox } from '@/components/loan/inputs'
 import { ChoiceSelect } from '@/components/loan/ChoiceSelect'
-import { Disclaimer } from '@/components/layout/Disclaimer'
 import { usePageTitle } from '@/components/layout/usePageTitle'
 import { LabCard, Metric, ScenarioOutcome, months } from '@/components/savings/shared'
 import { useDraft } from '@/features/check-loan/DraftContext'
@@ -71,14 +70,14 @@ export default function SavingsPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-6 sm:py-10" lang="en">
       <header>
-        <h1 className="text-2xl font-bold sm:text-3xl">How Can I Pay Less?</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">How Can I Pay Less?</h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
           Try strategies on your own loan and see interest saved, months saved, the charges each strategy causes, and the net result. Nothing here tells you to prepay — it shows when it
           pays off.
         </p>
       </header>
 
-      <section className="rounded-xl border bg-card p-4 sm:p-6" aria-labelledby="src-t">
+      <section className="rounded-2xl border bg-card p-4 sm:p-6" aria-labelledby="src-t">
         <h2 id="src-t" className="font-semibold">
           Which loan?
         </h2>
@@ -162,7 +161,6 @@ export default function SavingsPage() {
           <Penalties input={input} />
         </>
       )}
-      <Disclaimer />
     </div>
   )
 }
@@ -501,7 +499,7 @@ function OptionalCharges({ input }: { input: LoanInput | null }) {
       ) : (
         <ul className="space-y-3">
           {impacts.map((i) => (
-            <li key={i.chargeId} className="rounded-lg border bg-background/60 p-3 text-sm">
+            <li key={i.chargeId} className="rounded-xl bg-muted/60 p-3 text-sm">
               <p className="font-semibold">
                 {i.name} <span className="font-normal text-muted-foreground">({i.mandatory === 'no' ? 'marked optional' : 'mandatory status unknown'})</span>
               </p>

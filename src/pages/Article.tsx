@@ -1,7 +1,6 @@
 import { Link, useParams } from 'react-router'
 import { ArrowLeft, Lightbulb, MessageCircleQuestion } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Disclaimer } from '@/components/layout/Disclaimer'
 import { usePageTitle } from '@/components/layout/usePageTitle'
 import { articleBySlug } from '@/content/articles'
 import { sourceById } from '@/content/sources'
@@ -20,7 +19,7 @@ export default function ArticlePage() {
         </Link>
       </Button>
       <header>
-        <h1 className="text-2xl font-bold sm:text-3xl">{a.title}</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{a.title}</h1>
         <p className="mt-2 text-lg text-muted-foreground">{a.summary}</p>
       </header>
       <div className="space-y-4 text-[15px] leading-relaxed">
@@ -42,7 +41,7 @@ export default function ArticlePage() {
               </p>
             )
           return (
-            <figure key={i} className="rounded-xl border bg-card p-4">
+            <figure key={i} className="rounded-2xl border bg-card p-4">
               <figcaption className="text-sm font-semibold">{b.title}</figcaption>
               <table className="mt-2 w-full text-sm">
                 <tbody>
@@ -61,7 +60,7 @@ export default function ArticlePage() {
           )
         })}
       </div>
-      <section className="rounded-xl border bg-card p-4" aria-labelledby="ask">
+      <section className="rounded-2xl border bg-card p-4" aria-labelledby="ask">
         <h2 id="ask" className="flex items-center gap-2 font-semibold">
           <MessageCircleQuestion className="size-5 text-brand" aria-hidden /> Questions to ask your lender
         </h2>
@@ -106,7 +105,6 @@ export default function ArticlePage() {
       <Button asChild variant="brand">
         <Link to="/check-loan">Check my loan</Link>
       </Button>
-      <Disclaimer />
     </article>
   )
 }

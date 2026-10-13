@@ -8,15 +8,15 @@ export function ExistingLoanCard({ existing: e }: { existing: ExistingLoanResult
   return (
     <div className="space-y-4 text-sm">
       <dl className="grid gap-3 sm:grid-cols-3">
-        <div className="rounded-lg border bg-background/60 p-3">
+        <div className="rounded-xl bg-muted/60 p-3">
           <dt className="text-xs text-muted-foreground">{t('existing.outstanding')}</dt>
           <dd className="num text-lg font-bold">{formatINR(e.state.outstanding)}</dd>
         </div>
-        <div className="rounded-lg border bg-background/60 p-3">
+        <div className="rounded-xl bg-muted/60 p-3">
           <dt className="text-xs text-muted-foreground">{t('existing.remaining')}</dt>
           <dd className="num text-lg font-bold">{e.state.remainingPeriods}</dd>
         </div>
-        <div className="rounded-lg border bg-background/60 p-3">
+        <div className="rounded-xl bg-muted/60 p-3">
           <dt className="text-xs text-muted-foreground">{t('existing.remainingInterest')}</dt>
           <dd className="num text-lg font-bold">{formatINR(e.remainingInterest)}</dd>
         </div>

@@ -79,7 +79,7 @@ export function AmortizationView({
         <TabsContent value="years">
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {years.map((y) => (
-              <li key={y.year} className="rounded-lg border bg-background/60 p-3 text-sm">
+              <li key={y.year} className="rounded-xl bg-muted/60 p-3 text-sm">
                 <p className="font-semibold">
                   {t('amort.year')} {y.year}
                 </p>

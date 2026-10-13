@@ -11,7 +11,7 @@ export default function LearnPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-10 px-4 py-6 sm:py-10" lang="en">
       <header>
-        <h1 className="text-2xl font-bold sm:text-3xl">Learn how loan cost works</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Learn how loan cost works</h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
           Short, practical guides with worked ₹ examples and the questions to ask your lender. Examples are illustrations, not real lender offers.
         </p>
@@ -26,7 +26,7 @@ export default function LearnPage() {
             <ul className="mt-3 grid gap-3 sm:grid-cols-2">
               {items.map((a) => (
                 <li key={a.slug}>
-                  <Link to={`/learn/${a.slug}`} className="block h-full rounded-xl border bg-card p-4 hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring">
+                  <Link to={`/learn/${a.slug}`} className="block h-full rounded-2xl border bg-card p-4 hover:bg-accent focus-visible:outline-2 focus-visible:outline-ring">
                     <p className="font-semibold">{a.title}</p>
                     <p className="mt-1 text-sm text-muted-foreground">{a.summary}</p>
                     <p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
@@ -39,7 +39,7 @@ export default function LearnPage() {
           </section>
         )
       })}
-      <section aria-labelledby="glossary" className="rounded-xl border bg-card p-4 sm:p-6">
+      <section aria-labelledby="glossary" className="rounded-2xl border bg-card p-4 sm:p-6">
         <h2 id="glossary" className="text-lg font-semibold">
           Glossary
         </h2>

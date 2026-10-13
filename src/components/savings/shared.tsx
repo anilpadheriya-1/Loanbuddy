@@ -21,7 +21,7 @@ export function ScenarioOutcome({ r, periodsPerYear = 12, className }: { r: Scen
         <Metric label="Interest with change" value={formatINR(r.scenario.totalInterest)} />
         <Metric label="Charges caused" value={formatINR(r.strategyCosts)} />
       </dl>
-      <div className={cn('grid gap-3 rounded-lg p-4 sm:grid-cols-3', worth ? 'bg-savings-soft' : 'bg-warning-soft')}>
+      <div className={cn('grid gap-3 rounded-xl p-4 sm:grid-cols-3', worth ? 'bg-savings-soft' : 'bg-warning-soft')}>
         <Big label="Interest saved" value={formatINR(r.interestSaved)} tone={worth ? 'text-savings' : ''} />
         <Big label="Finish earlier by" value={r.periodsSaved > 0 ? fmtTenure(r.periodsSaved) : '—'} />
         <Big label="Net savings (after charges)" value={formatINR(r.netSavings)} tone={worth ? 'text-savings' : 'text-warning'} />
@@ -37,7 +37,7 @@ export function ScenarioOutcome({ r, periodsPerYear = 12, className }: { r: Scen
 
 export function Metric({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="rounded-lg border bg-background/60 p-3">
+    <div className="rounded-xl bg-muted/60 p-3">
       <dt className="text-xs text-muted-foreground">{label}</dt>
       <dd className="num font-semibold">{value}</dd>
     </div>
@@ -55,7 +55,7 @@ export function Big({ label, value, tone }: { label: string; value: string; tone
 
 export function LabCard({ id, title, description, children, notWorth }: { id: string; title: string; description?: string; children: React.ReactNode; notWorth?: string }) {
   return (
-    <section id={id} aria-labelledby={`${id}-t`} className="scroll-mt-20 rounded-xl border bg-card p-4 shadow-xs sm:p-6">
+    <section id={id} aria-labelledby={`${id}-t`} className="scroll-mt-20 rounded-2xl border bg-card p-4 sm:p-6">
       <h2 id={`${id}-t`} className="text-lg font-semibold">
         {title}
       </h2>

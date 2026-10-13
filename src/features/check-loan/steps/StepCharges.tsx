@@ -83,7 +83,7 @@ function ChargeCard({
   const rupees = chargeRupees(c, base)
   const pid = `chg-${index}`
   return (
-    <div className="rounded-lg border bg-background/60 p-3 sm:p-4" role="group" aria-label={c.name || t('charges.name')}>
+    <div className="rounded-xl bg-muted/60 p-3 sm:p-4" role="group" aria-label={c.name || t('charges.name')}>
       <div className="flex items-start gap-2">
         <div className="grid flex-1 gap-4 sm:grid-cols-2">
           <Field id={`${pid}-name`} label={t('charges.name')}>

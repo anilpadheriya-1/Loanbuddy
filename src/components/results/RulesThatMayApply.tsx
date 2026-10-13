@@ -17,7 +17,7 @@ export function RulesThatMayApply({ report }: { report: LoanReport }) {
       <PrepaymentRuleCard rule={report.prepaymentRule} />
       <div className="grid gap-3 sm:grid-cols-2">
         {CARDS.map((c) => (
-          <div key={c.title} className="rounded-lg border bg-background/60 p-4 text-sm">
+          <div key={c.title} className="rounded-xl bg-muted/60 p-4 text-sm">
             <p className="font-semibold">{t(c.title)}</p>
             <p className="mt-1 text-muted-foreground">{t(c.body)}</p>
             <Link to={`/rules#${c.source}`} className="mt-2 inline-block text-xs text-brand underline-offset-2 hover:underline">

@@ -9,7 +9,7 @@ export default function PrivacyPage() {
   const [cleared, setCleared] = useState(false)
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 sm:py-10" lang="en">
-      <h1 className="text-2xl font-bold sm:text-3xl">Privacy</h1>
+      <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Privacy</h1>
       <div className="space-y-4 text-[15px] leading-relaxed">
         <p className="text-lg font-medium">Your loan numbers stay in your browser.</p>
         <ul className="list-disc space-y-1.5 pl-5">

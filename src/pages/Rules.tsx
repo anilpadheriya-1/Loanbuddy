@@ -3,7 +3,6 @@ import { useLocation } from 'react-router'
 import { ExternalLink } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Alert } from '@/components/ui/alert'
-import { Disclaimer } from '@/components/layout/Disclaimer'
 import { usePageTitle } from '@/components/layout/usePageTitle'
 import { SOURCES, SOURCES_LAST_VERIFIED, TOPIC_LABELS, type SourceStatus } from '@/content/sources'
 import { LENDER_LIBRARY } from '@/content/lender-library'
@@ -26,7 +25,7 @@ export default function RulesPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-6 sm:py-10" lang="en">
       <header>
-        <h1 className="text-2xl font-bold sm:text-3xl">Rules & Sources</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Rules & Sources</h1>
         <p className="mt-2 max-w-3xl text-muted-foreground">
           The official documents our explanations are based on, with plain-English summaries. Summaries are simplified — the linked document is what counts.
         </p>
@@ -60,7 +59,7 @@ export default function RulesPage() {
         {SOURCES.map((s) => {
           const st = STATUS[s.status]
           return (
-            <li key={s.id} id={s.id} className="scroll-mt-20 rounded-xl border bg-card p-4 sm:p-5">
+            <li key={s.id} id={s.id} className="scroll-mt-20 rounded-2xl border bg-card p-4 sm:p-5">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant={st.variant}>{st.label}</Badge>
                 <Badge variant="outline">{s.regulator}</Badge>
@@ -86,7 +85,7 @@ export default function RulesPage() {
         })}
       </ul>
 
-      <section className="rounded-xl border bg-card p-4 sm:p-6" aria-labelledby="library">
+      <section className="rounded-2xl border bg-card p-4 sm:p-6" aria-labelledby="library">
         <h2 id="library" className="text-lg font-semibold">
           Lender rate library
         </h2>
@@ -96,7 +95,6 @@ export default function RulesPage() {
         </p>
         <p className="mt-2 text-sm">Verified entries: {LENDER_LIBRARY.length}</p>
       </section>
-      <Disclaimer />
     </div>
   )
 }

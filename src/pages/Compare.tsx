@@ -8,7 +8,6 @@ import { Alert } from '@/components/ui/alert'
 import { Field } from '@/components/loan/Field'
 import { ChoiceSelect } from '@/components/loan/ChoiceSelect'
 import { MoneyBox, NumberBox, PercentBox } from '@/components/loan/inputs'
-import { Disclaimer } from '@/components/layout/Disclaimer'
 import { usePageTitle } from '@/components/layout/usePageTitle'
 import { draftToInput } from '@/features/check-loan/draft'
 import { newOffer, offerInput, QuickOfferSchema, type QuickOffer } from '@/features/compare/offers'
@@ -84,7 +83,7 @@ export default function ComparePage() {
   return (
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:py-10" lang="en">
       <header>
-        <h1 className="text-2xl font-bold sm:text-3xl">Compare Loans</h1>
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Compare Loans</h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
           Compare 2–3 offers on what they actually cost — not on the headline rate. We don’t pick a “best” loan: a lower EMI, a shorter tenure or better flexibility can each matter
           more to you than the lowest cost.
@@ -106,7 +105,7 @@ export default function ComparePage() {
         )}
       </div>
 
-      <section className="rounded-xl border bg-card p-4 sm:p-6" aria-labelledby="cmp-t">
+      <section className="rounded-2xl border bg-card p-4 sm:p-6" aria-labelledby="cmp-t">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 id="cmp-t" className="text-lg font-semibold">
             Side by side
@@ -151,7 +150,6 @@ export default function ComparePage() {
           not just cost.
         </Alert>
       </section>
-      <Disclaimer />
     </div>
   )
 }
@@ -180,7 +178,7 @@ function OfferCard({
 }) {
   const p = `o${index}`
   return (
-    <section className="space-y-4 rounded-xl border bg-card p-4" aria-label={o.label}>
+    <section className="space-y-4 rounded-2xl border bg-card p-4" aria-label={o.label}>
       <div className="flex items-center gap-2">
         <Input aria-label="Offer name" value={o.label} maxLength={40} onChange={(e) => onChange({ label: e.target.value })} className="font-semibold" />
         {onRemove && (

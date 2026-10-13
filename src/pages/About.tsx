@@ -1,12 +1,11 @@
 import { Link } from 'react-router'
-import { Disclaimer } from '@/components/layout/Disclaimer'
 import { usePageTitle } from '@/components/layout/usePageTitle'
 
 export default function AboutPage() {
   usePageTitle('About')
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 sm:py-10" lang="en">
-      <h1 className="text-2xl font-bold sm:text-3xl">About Loan Reality India</h1>
+      <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">About Loan Reality India</h1>
       <div className="space-y-4 text-[15px] leading-relaxed">
         <p>
           Most of us compare loans by the headline interest rate. But fees deducted upfront, insurance, GST on fees, advance EMIs and the way interest is calculated can make a loan
@@ -43,7 +42,6 @@ export default function AboutPage() {
           <li>A multi-loan view, optional accounts to sync saved loans, and a WhatsApp version.</li>
         </ul>
       </div>
-      <Disclaimer />
     </div>
   )
 }

@@ -94,7 +94,7 @@ export function StepRepayment({
       <Section title={t('field.recurring')} description={t('field.recurringHelp')}>
         <div className="space-y-3">
           {draft.recurring.map((r, i) => (
-            <div key={r.id} className="grid items-end gap-3 rounded-lg border bg-background/60 p-3 sm:grid-cols-[1.4fr_1fr_1fr_1fr_auto]">
+            <div key={r.id} className="grid items-end gap-3 rounded-xl bg-muted/60 p-3 sm:grid-cols-[1.4fr_1fr_1fr_1fr_auto]">
               <Field id={`rec-${i}-name`} label={t('recurring.name')}>
                 {({ id }) => (
                   <Input id={id} value={r.name} maxLength={60} onChange={(e) => setDraft((d) => ({ ...d, recurring: d.recurring.map((x) => (x.id === r.id ? { ...x, name: e.target.value } : x)) }))} />
@@ -155,7 +155,7 @@ export function StepRepayment({
       <Section title={t('field.contingent')} description={t('field.contingentHelp')}>
         <div className="space-y-3">
           {draft.contingent.map((c, i) => (
-            <div key={c.id} className="grid items-end gap-3 rounded-lg border bg-background/60 p-3 sm:grid-cols-[1.5fr_1fr_auto]">
+            <div key={c.id} className="grid items-end gap-3 rounded-xl bg-muted/60 p-3 sm:grid-cols-[1.5fr_1fr_auto]">
               <Field id={`con-${i}-kind`} label={t('charges.name')}>
                 {({ id, labelId }) => (
                   <ChoiceSelect

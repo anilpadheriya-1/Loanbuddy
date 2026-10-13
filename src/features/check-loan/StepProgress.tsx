@@ -9,7 +9,7 @@ export function StepProgress({ current, onJump }: { current: number; onJump: (i:
   const { t } = useI18n()
   return (
     <nav aria-label={t('wizard.stepsNav')} className="no-print">
-      <ol className="flex gap-1 overflow-x-auto pb-1 sm:gap-2">
+      <ol className="flex gap-1.5">
         {STEP_KEYS.map((key, i) => {
           const done = i < current
           const active = i === current
@@ -20,25 +20,21 @@ export function StepProgress({ current, onJump }: { current: number; onJump: (i:
                 onClick={() => onJump(i)}
                 aria-current={active ? 'step' : undefined}
                 className={cn(
-                  'group flex w-full min-w-12 flex-col items-center gap-1 rounded-lg px-1 py-1.5 text-xs font-medium focus-visible:outline-2 focus-visible:outline-ring sm:flex-row sm:gap-2 sm:px-2 sm:text-sm',
+                  'group flex min-h-11 w-full flex-col justify-end gap-2 rounded-md pb-1 text-left text-xs font-medium transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-ring',
                   active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
                 )}
               >
-                <span
-                  className={cn(
-                    'flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-semibold',
-                    active && 'border-primary bg-primary text-primary-foreground',
-                    done && 'border-savings bg-savings-soft text-savings',
-                  )}
-                  aria-hidden
-                >
-                  {done ? <Check className="size-4" /> : i + 1}
-                </span>
                 {/* On small screens names are for screen readers only (the current step is named below the bar). */}
-                <span className="truncate max-sm:sr-only">{t(`wizard.steps.${key}` as TKey)}</span>
+                <span className="flex items-center gap-1 truncate max-sm:sr-only">
+                  {done && <Check className="size-3.5 shrink-0 text-savings" aria-hidden />}
+                  <span className="truncate">{t(`wizard.steps.${key}` as TKey)}</span>
+                </span>
                 <span className="sr-only">{done ? `(${t('wizard.completed')})` : active ? `(${t('wizard.current')})` : ''}</span>
+                <span
+                  className={cn('h-1.5 w-full rounded-full transition-colors duration-200', done ? 'bg-primary' : active ? 'bg-brand' : 'bg-muted group-hover:bg-border')}
+                  aria-hidden
+                />
               </button>
-              <div className={cn('mx-auto mt-1 h-1 w-full rounded-full', done || active ? 'bg-primary' : 'bg-muted')} aria-hidden />
             </li>
           )
         })}

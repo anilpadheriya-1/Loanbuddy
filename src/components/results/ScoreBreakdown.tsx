@@ -33,7 +33,7 @@ export function ScoreBreakdown({ score, confidence }: { score: LoanDealScore; co
           </ul>
         </div>
       )}
-      <div className="rounded-lg border bg-background/60 p-4 text-sm">
+      <div className="rounded-xl bg-muted/60 p-4 text-sm">
         <p className="font-semibold">{t('results.confidenceTitle', { level: t(`confidence.${confidence.level}` as TKey) })}</p>
         <p className="mt-1 text-muted-foreground">{t('confidence.explain')}</p>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">

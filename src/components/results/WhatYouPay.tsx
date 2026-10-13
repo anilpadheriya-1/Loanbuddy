@@ -62,7 +62,7 @@ export function WhatYouPay({ analysis: a }: { analysis: LoanAnalysis }) {
 
 function Stat({ label, value, emphasis }: { label: string; value: string; emphasis?: boolean }) {
   return (
-    <div className="rounded-lg border bg-background/60 p-3">
+    <div className="rounded-xl bg-muted/60 p-3">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className={`num text-xl font-bold ${emphasis ? 'text-warning' : ''}`}>{value}</p>
     </div>

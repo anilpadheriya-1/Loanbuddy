@@ -44,7 +44,11 @@ export default function CheckLoanPage() {
     const e = validateStep(stepKey, draft)
     setErrors(e)
     if (Object.keys(e).length > 0) {
-      requestAnimationFrame(() => document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus())
+      requestAnimationFrame(() => {
+        const el = document.querySelector<HTMLElement>('[aria-invalid="true"]')
+        el?.focus({ preventScroll: true })
+        el?.scrollIntoView({ block: 'center' })
+      })
       return
     }
     goTo(step + 1)
@@ -66,21 +70,21 @@ export default function CheckLoanPage() {
   }, [stepKey, draft, update, setDraft, errors, emi, report])
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 sm:py-10">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 id="wizard-heading" tabIndex={-1} className="text-2xl font-bold sm:text-3xl">
+    <div className="mx-auto max-w-6xl px-4 pt-6 sm:pt-10">
+      <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+        <div className="min-w-0">
+          <h1 id="wizard-heading" tabIndex={-1} className="text-2xl font-bold tracking-tight sm:text-3xl">
             {t('wizard.title')}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">{t('wizard.subtitle')}</p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={() => loadExample()}>
+        <div className="-ml-3 flex flex-wrap gap-1 sm:ml-0">
+          <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={() => loadExample()}>
             <Sparkles aria-hidden /> {t('wizard.tryExample')}
           </Button>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="text-muted-foreground">
                 <RotateCcw aria-hidden /> {t('wizard.startOver')}
               </Button>
             </DialogTrigger>
@@ -123,7 +127,7 @@ export default function CheckLoanPage() {
       <div className="mt-6">
         <StepProgress current={step} onJump={goTo} />
       </div>
-      <p className="mt-4 text-sm font-medium text-muted-foreground" aria-live="polite">
+      <p className="mt-3 text-sm font-medium text-muted-foreground" aria-live="polite">
         {t('wizard.step', { n: step + 1, total: 5 })} · {t(`wizard.steps.${stepKey}` as TKey)}
       </p>
 
@@ -135,17 +139,18 @@ export default function CheckLoanPage() {
             </Alert>
           )}
           {content}
-          <div className="sticky bottom-0 z-10 -mx-4 mt-6 flex items-center justify-between gap-3 border-t bg-background/95 px-4 pt-3 pb-[calc(0.75rem+var(--safe-bottom))] backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:px-0 sm:pb-3">
-            <Button variant="outline" onClick={() => goTo(step - 1)} disabled={step === 0}>
+          {/* One-handed reach: on phones the actions stay pinned just above the tab bar. */}
+          <div className="sticky bottom-[calc(var(--bottom-nav)+var(--safe-bottom))] z-30 -mx-4 mt-8 flex items-center justify-between gap-3 border-t bg-background/90 px-4 py-3 backdrop-blur-md lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:px-0 lg:backdrop-blur-none">
+            <Button variant="outline" onClick={() => goTo(step - 1)} disabled={step === 0} className="max-sm:px-4">
               <ArrowLeft aria-hidden /> {t('common.back')}
             </Button>
             <span className="hidden text-xs text-muted-foreground sm:inline">{t('wizard.autosaved')}</span>
             {step < 4 ? (
-              <Button onClick={next}>
+              <Button onClick={next} className="min-w-32 max-sm:flex-1 sm:min-w-36">
                 {t('common.next')} <ArrowRight aria-hidden />
               </Button>
             ) : (
-              <Button variant="brand" onClick={next}>
+              <Button variant="brand" onClick={next} className="max-sm:flex-1">
                 {t('wizard.seeResults')} <ArrowRight aria-hidden />
               </Button>
             )}
