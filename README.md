@@ -101,7 +101,7 @@ The Android app wraps the same web build with [Capacitor](https://capacitorjs.co
 - The Android workflow resolves the Gradle runtime dependency graph and runs [`scripts/verify-apk.mjs`](scripts/verify-apk.mjs) on the built APK/AAB. It unzips the APK, scans the compiled code (`classes*.dex`) and the bundled web app, and reads the manifest's permissions. The build fails if anything matches.
 - The e2e tests fail if the app makes any request to another site.
 
-Each release lists the APK's SHA-256 (also in `SHA256SUMS.txt` and `apk-verification.md`). **Only install the APK from this repository's `android-latest` release.** APKs made by online "website to app" converters often inject ads; such ads do not come from this code. To check a downloaded file:
+Each release lists the APK's SHA-256 (also in `SHA256SUMS.txt` and `apk-verification.md`). **Only install the APK from this repository's `android-latest` release, and check its checksum.** Builds published before October 2026 may contain test ads: the unmerged branch `claude/peaceful-bohr-t2k3jn` added AdMob, and its build #7 was published as `android-latest` on 26 Sep 2026. Uninstall that build and install a verified one. The verification step now stops any build with an ad SDK from being published. To check a downloaded file:
 
 ```bash
 sha256sum loan-reality-india-debug.apk                    # compare with the release notes
